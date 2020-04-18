@@ -10,13 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface ActionRepository extends JpaRepository<Action, Integer> {
-    @Query(nativeQuery = true, value = "SELECT * FROM action where work_id = :id")
+    @Query(nativeQuery = true, value = "SELECT * FROM action where action_id = :id")
     Action findWorkById(@Param(value = "id") int id);
 // insert
     @Modifying
     @Query(nativeQuery = true,
             value = "insert into action (action_id,action_name, profile_id, group_id , time_start, time_end, created_time) " +
-                    "values (default ,:workname,:creator,:groupId,:timestart,:timeend,:,default )")
+                    "values (default ,:workname,:creator,:groupId,:timestart,:timeend,default )")
     @Transactional
     void insertAction(@Param(value = "workname") String workname,
                       @Param(value = "creator") int creator,
@@ -28,7 +28,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
     // truoc khi xoa trong bang work phai xoa trong bang detail truoc
     @Transactional
     @Modifying
-    @Query(value = "DELETE FROM ACTION WHERE action .action_id= :idW", nativeQuery = true)
+    @Query(value = "DELETE FROM action WHERE action.action_id= :idW", nativeQuery = true)
     void deleteActionById(@Param("idW") int idW);
 
 

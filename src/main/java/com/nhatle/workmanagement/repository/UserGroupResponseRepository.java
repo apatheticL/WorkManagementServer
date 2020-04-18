@@ -9,6 +9,12 @@ import java.util.List;
 
 public interface UserGroupResponseRepository extends JpaRepository<UserGroupResponse,Integer> {
     @Query(nativeQuery = true,
-    value = "select user_group.profile_id,user_group.group_id,user_profile.full_name,user_profile.avatar from user_group join user_profile on user_group.profile_id= user_profile.profile_id where user_group.group_id =:groupId ")
-    List<UserGroupResponse> getAllUserOnGroup(@Param(value = ":groupId") int groupId);
+            value = "select user_profile.profile_id,user_profile.avatar,user_profile.full_name,user_profile.addres," +
+                    " user_profile.phone_number,user_profile.email , user_team.group_id" +
+                    " from user_team " +
+                    " join user_profile on user_profile.profile_id = user_team.profile_id " +
+                    " join action on action.group_id = user_team.group_id " +
+                    " where action.group_id = :groupMakeAction and action.action_id =:actionId")
+     List<UserGroupResponse> getAllUserOnGroup(@Param(value = "groupMakeAction") int groupMakeAction,
+                                               @Param(value = "actionId") int actionId);
 }

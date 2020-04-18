@@ -1,12 +1,21 @@
 package com.nhatle.workmanagement.model.response;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
+import com.nhatle.workmanagement.model.UserActionSmallId;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+
+@Entity
+@IdClass(UserActionSmallId.class)
 public class UserActionSmallResponse {
     @Id
     @Column(name = "profile_id")
     private int profileId;
+    @Id
+    @Column(name = "group_id")
+    private int groupId;
     @Id
     @Column(name = "action_small_id")
     private int actionSmallId;
@@ -18,6 +27,14 @@ public class UserActionSmallResponse {
     @Column(name = "full_name")
     private String fullName;
     private String avatar;
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
 
     public int getProfileId() {
         return profileId;

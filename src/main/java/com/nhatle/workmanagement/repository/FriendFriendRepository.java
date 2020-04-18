@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface FriendFriendRepository extends JpaRepository<InvitationFriend,Integer> {
     @Modifying
     @Query(nativeQuery = true,
-            value ="insert into invitation_friend (invitation_friend.friend_id,invitation_friend.sender_id,invitation_friend.receiver_id,invitation_friend.is_accept,invitation_friend.created_time) values (default,:senderid,:receiverid,:accept,default)")
+            value ="insert into invitation_friend (friend_id,sender_id," +
+                    "receiver_id,is_accept,created_time) " +
+                    "values (default,:senderid,:receiverid,:accept,default)")
     @Transactional
     void senderAddFriend(@Param(value = "senderid")int senderid,
                     @Param(value = "receiverid") int receiverid,

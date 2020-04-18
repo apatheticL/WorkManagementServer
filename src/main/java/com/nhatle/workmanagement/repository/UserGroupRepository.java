@@ -13,16 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UserGroupRepository extends JpaRepository<UserGroup,Integer> {
     @Modifying
     @Query(nativeQuery = true,
-            value = "insert into user_group(group_id,profile_id) values (:groupId,:profileId)")
+            value = "insert into user_team (group_id,profile_id) values (:groupId,:profileId)")
+    @Transactional
     void addMemberGroup(@Param(value = "groupId")int groupId,
                         @Param(value = "profileId")int profileId);
 
+    @Modifying
     @Transactional
     @Query(nativeQuery = true,
-    value = "delete user_group where group_id = :groupId and profile_id=:profileId")
-    boolean deleteUserGroups(@Param(value = "groupId") int groupId,
+    value = "delete from user_team where group_id = :groupId and profile_id= :profileId")
+    void deleteUserGroups(@Param(value = "groupId") int groupId,
                              @Param(value = "profileId") int profileId);
     @Query(nativeQuery = true,
-    value = "select  * from user_group where profile_id:profileId and groupId = :groupId")
+    value = "select  * from user_team where profile_id = :profileId and group_id = :groupId")
     UserGroup findInfo(int groupId, int profileId);
 }

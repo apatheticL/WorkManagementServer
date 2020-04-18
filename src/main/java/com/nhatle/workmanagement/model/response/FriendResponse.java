@@ -1,9 +1,11 @@
 package com.nhatle.workmanagement.model.response;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+@Entity
 public class FriendResponse {
     @Id
     private int id;

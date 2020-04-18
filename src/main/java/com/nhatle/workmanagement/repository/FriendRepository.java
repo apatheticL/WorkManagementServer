@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+
 public interface FriendRepository extends JpaRepository<FriendResponse, Integer> {
     @Query(nativeQuery = true,
             value = "SELECT " +
@@ -28,10 +28,10 @@ public interface FriendRepository extends JpaRepository<FriendResponse, Integer>
             @Param(value = "userId") int userId
     );
     @Query(nativeQuery = true, value = "select invitation_friend.friend_id as id,invitation_friend.sender_id as friend_id, user_profile.full_name as friend_name," +
-            " user_profile.avatar_user as friend_avatar," +
+            " user_profile.avatar as friend_avatar," +
             " user_profile.username as friend_username ," +
             " user_profile.phone_number " +
             " from user_profile join invitation_friend on user_profile.profile_id = invitation_friend.sender_id " +
-            " where invitation_friend.receiver_id = :idprofile and invitation_friend.is_accept = 0")
-    List<FriendResponse> getAllFriendSender(@Param(value = "idprofile") int idprofile);
+            " where invitation_friend.receiver_id = :idProfile and invitation_friend.is_accept = 0")
+    List<FriendResponse> getAllFriendSender(@Param(value = "idProfile") int idProfile);
 }

@@ -13,17 +13,16 @@ import java.util.List;
 public interface GroupRepository extends JpaRepository<Group,Integer> {
     @Modifying
     @Query(nativeQuery = true,
-            value = "insert into group(group_id,group_name,created_time) values (default ,:groupName,default)")
+            value = "insert into team (group_id,group_name,created_time) values (default,:groupName,default)")
     @Transactional
-    void addGroup(@Param(value = ":groupName") String groupName
-    );
+    void addGroup(@Param(value = "groupName") String groupName);
 
-    @Query(nativeQuery = true, value = "select * from group where group_id =:groupId")
-    List<Group> findGroupByGroupId(@Param(value = "groupId") int groupId);
+    @Query(nativeQuery = true, value = "select * from team where team.group_id =:groupId")
+    Group findGroupByGroupId(@Param(value = "groupId") int groupId);
 
     @Transactional
     @Modifying
-    @Query(value = "DELETE FROM group WHERE group.group_id = :groupId", nativeQuery = true)
+    @Query(value = "DELETE FROM team WHERE team.group_id = :groupId", nativeQuery = true)
     void deleteGroupByGroupId(@Param("groupId") int groupId);
 
 }

@@ -7,9 +7,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+
 @Repository
 public interface UserActionSmallRepository extends JpaRepository<UserActionSmall, Integer> {
 
+    @Query(nativeQuery = true,
+    value = "SELECT * FROM user_action_small where group_id = :groupId and profile_id =:profileId and action_small_id =:actionSmallId")
+    UserActionSmall findUserActionSmall(@Param(value = "groupId") int groupId,
+                                        @Param(value = "profileId") int profileId,
+                                        @Param(value = "actionSmallId") int actionSmallId);
 
     @Modifying
     @Query(nativeQuery = true,
@@ -39,7 +46,7 @@ public interface UserActionSmallRepository extends JpaRepository<UserActionSmall
     @Transactional
     @Modifying
     @Query(value = "delete from user_action_small " +
-            "where group_id =:groupId and profile_id=:profileId and action_small_id = :actionSmallId;",
+            "where group_id =:groupId and profile_id=:profileId and action_small_id = :actionSmallId and group_id=:groupId",
             nativeQuery = true)
     void deleteUserActionSmall(@Param("actionSmallId") int actionSmallId,
                                   @Param("profileId") int profileId,

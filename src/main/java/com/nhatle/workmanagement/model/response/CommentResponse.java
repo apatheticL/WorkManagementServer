@@ -1,9 +1,10 @@
 package com.nhatle.workmanagement.model.response;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
-
+@Entity
 public class CommentResponse {
     @Id
     @Column(name = "comment_id")

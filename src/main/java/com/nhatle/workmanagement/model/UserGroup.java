@@ -3,7 +3,7 @@ package com.nhatle.workmanagement.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user_group")
+@Table(name = "user_team")
 @IdClass(IdUserGroup.class)
 public class UserGroup {
     @Id

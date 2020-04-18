@@ -16,17 +16,22 @@ public interface ActionSmallRepository extends JpaRepository<ActionSmall, Intege
     value = "select * from action_small where action_id = :actionId")
     List<ActionSmall> getAllActionSmallByActionId(@Param(value = "actionId") int actionId);
 
+    @Query(nativeQuery = true,
+            value = "select * from action_small where action_small_id = :actionId")
+    ActionSmall getActionSmallByActionSmallId(@Param(value = "actionId") int actionId);
+
     @Modifying
+    @Transactional
     @Query(nativeQuery = true,
     value = "insert into action_small(action_small_id,action_id,description) values (default ,:actionId,:description)")
-    void addActionSmall(@Param(value = "groupId") int groupId,
+    void addActionSmall(@Param(value = "actionId") int actionId,
                         @Param(value = "description") String description);
 
     @Transactional
     @Modifying
     @Query(nativeQuery = true,
-    value = "delete action_small where action_small_id=:actionSmallId")
-    boolean deleteActionSmallByActionSmallId(@Param(value = "actionSmallId") int actionSmallId);
+    value = "delete from action_small where action_small_id=:actionSmallId")
+    void deleteActionSmallByActionSmallId(@Param(value = "actionSmallId") int actionSmallId);
 
 
 
