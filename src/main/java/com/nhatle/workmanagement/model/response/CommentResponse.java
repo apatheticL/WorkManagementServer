@@ -3,20 +3,34 @@ package com.nhatle.workmanagement.model.response;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Date;
+
 @Entity
 public class CommentResponse {
     @Id
     @Column(name = "comment_id")
     private int commentId;
-    @Column(name = "profile_name")
-    private int profileName;
+    @Column(name = "profile_id")
+    private int profileId;
+    @Column(name = "group_id")
+    private int groupId;
+    @Column(name = "full_name")
+    private String fullName;
     private String avatar;
-    @Column(name = "work_id")
-    private int workId;
+    @Column(name = "action_id")
+    private int actionId;
     private String content;
+    @Column(name = "type_content")
+    private int typeContent;
     @Column(name = "created_time")
-    private Date createdTime;
+    private String createdTime;
+
+    public int getType() {
+        return typeContent;
+    }
+
+    public void setType(int type) {
+        this.typeContent = type;
+    }
 
     public String getAvatar() {
         return avatar;
@@ -34,20 +48,28 @@ public class CommentResponse {
         this.commentId = commentId;
     }
 
-    public int getProfileName() {
-        return profileName;
+    public int getProfileId() {
+        return profileId;
     }
 
-    public void setProfileName(int profileName) {
-        this.profileName = profileName;
+    public void setProfileId(int profileId) {
+        this.profileId = profileId;
     }
 
-    public int getWorkId() {
-        return workId;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setWorkId(int workId) {
-        this.workId = workId;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public int getActionId() {
+        return actionId;
+    }
+
+    public void setActionId(int workId) {
+        this.actionId = workId;
     }
 
     public String getContent() {
@@ -58,11 +80,19 @@ public class CommentResponse {
         this.content = content;
     }
 
-    public Date getCreatedTime() {
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(String createdTime) {
         this.createdTime = createdTime;
     }
 }

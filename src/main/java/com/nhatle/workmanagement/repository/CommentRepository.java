@@ -1,5 +1,6 @@
 package com.nhatle.workmanagement.repository;
 
+import com.nhatle.workmanagement.model.Comment;
 import com.nhatle.workmanagement.model.response.CommentResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,17 +13,35 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface CommentRepository extends JpaRepository<CommentResponse,Integer> {
-    @Query(nativeQuery = true, value = "SELECT comment.comment_id, profile.full_name as profile_name, profile.avatar,comment.work_id,comment.content,comment.created_time FROM comment join profile  on comment.profile_id = profile.profile_id where work_id = :idwork")
-    List<CommentResponse> getAllCommentByWork(@Param(value = "idwork")int idwork);
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
+
 
     @Modifying
     @Query(nativeQuery = true,
-            value ="insert into comment(comment_id,profile_id,work_id,content,created_time) " +
-                    "values (default ,:idprofile,:workid,:content,default )")
+            value = "insert into comment_action(comment_id,profile_id,group_id,action_id,content,type_content,created_time)" +
+                    " values (default ,:profileId,:groupId,:actionId,:content,:typeContent,default )")
     @Transactional
-    void addComment(@Param(value = "idprofile")int idprofile,
-                    @Param(value = "workid") int workid,
-                    @Param(value = "content") String content
+    void addComment(@Param(value = "profileId") int profileId,
+                    @Param(value = "groupId") int groupId,
+                    @Param(value = "actionId") int actionId,
+                    @Param(value = "content") String content,
+                    @Param(value = "typeContent") int typeContent
     );
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM comment_action " +
+            "WHERE comment_action.comment_id = :commentId" +
+            " and comment_action.profile_id=:profileId", nativeQuery = true)
+    void deleteCommentByUser(@Param("commentId") int commentId,
+                             @Param("profileId") int profileId);
+
+
+    @Query(nativeQuery = true,
+    value = "select  * from comment_action " +
+            "where comment_action.comment_id = :commentId " +
+            "and comment_action.profile_id=:profileId")
+
+    Comment findCommentByUser(@Param("commentId") int commentId,
+                             @Param("profileId") int profileId);
 }

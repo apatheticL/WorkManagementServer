@@ -1,10 +1,9 @@
 package com.nhatle.workmanagement.model;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "comment_action")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,16 +15,17 @@ public class Comment {
     @Column(name = "group_id")
     private int groupId;
     private String content;
-    private int type;
+    @Column(name = "type_content")
+    private int typeContent;
     @Column(name = "created_time")
-    private Date createdTime;
+    private String createdTime;
 
-    public int getType() {
-        return type;
+    public int getTypeContent() {
+        return typeContent;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setTypeContent(int type) {
+        this.typeContent = type;
     }
 
     public int getGroupId() {
@@ -68,11 +68,11 @@ public class Comment {
         this.content = content;
     }
 
-    public Date getCreatedTime() {
+    public String getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(String createdTime) {
         this.createdTime = createdTime;
     }
 }

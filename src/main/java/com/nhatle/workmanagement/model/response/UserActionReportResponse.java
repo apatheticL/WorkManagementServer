@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 @Entity
-public class UserActionReportRespose {
+public class UserActionReportResponse {
     @Id
     @Column(name = "report_id")
     private int reportId;

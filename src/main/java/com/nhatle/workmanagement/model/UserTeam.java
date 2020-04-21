@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user_team")
 @IdClass(IdUserGroup.class)
-public class UserGroup {
+public class UserTeam {
     @Id
     @Column(name = "group_id")
     private int groupId;

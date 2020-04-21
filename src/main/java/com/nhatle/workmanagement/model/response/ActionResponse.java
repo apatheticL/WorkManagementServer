@@ -8,9 +8,9 @@ import java.util.Date;
 public class ActionResponse {
     @Id
     @Column(name = "action_id")
-    private int workId;
+    private int actionId;
     @Column(name = "action_name")
-    private String workName;
+    private String actionName;
     @Column(name = "profile_id")
     private int creatorId;
     @Column(name = "group_id")
@@ -22,23 +22,23 @@ public class ActionResponse {
     @Column(name = "time_end")
     private String timeEnd;
     @Column(name = "created_time")
-    private Date createdTime;
+    private String createdTime;
     private String avatar;
 
-    public int getWorkId() {
-        return workId;
+    public int getActionId() {
+        return actionId;
     }
 
-    public void setWorkId(int workId) {
-        this.workId = workId;
+    public void setActionId(int workId) {
+        this.actionId = workId;
     }
 
-    public String getWorkName() {
-        return workName;
+    public String getActionName() {
+        return actionName;
     }
 
-    public void setWorkName(String workName) {
-        this.workName = workName;
+    public void setActionName(String workName) {
+        this.actionName = workName;
     }
 
     public int getCreatorId() {
@@ -81,11 +81,11 @@ public class ActionResponse {
         this.timeEnd = timeEnd;
     }
 
-    public Date getCreatedTime() {
+    public String getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(String createdTime) {
         this.createdTime = createdTime;
     }
 

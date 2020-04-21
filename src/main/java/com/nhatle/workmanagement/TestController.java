@@ -26,8 +26,6 @@ public class TestController {
     @Autowired
     private ActionRepository actionRepository;
     @Autowired
-    private UserActionReportRepository reportWorkRepository;
-    @Autowired
     private UserActionSmallResponseRepository userActionSmallResponseRepository;
     @Autowired
     private UserActionSmallRepository userActionSmallRepository;
@@ -43,6 +41,10 @@ public class TestController {
     private UserReportRepository userReportRepository;
     @Autowired
     private UserActionReportRepository userActionReportRepository;
+    @Autowired
+    private CommentRepository commentRepository;
+    @Autowired
+    private CommentResponseRepository commentResponseRepository;
     // profile
     @PostMapping(value = "/login")
     public BaseResponse login(@RequestBody LoginResponse loginRequest) {
@@ -55,7 +57,7 @@ public class TestController {
     }
 
     @PostMapping(value = "/register")
-    public BaseResponse register(@RequestBody RegisterReponse registerReponse) {
+    public BaseResponse register(@RequestBody RegisterResponse registerReponse) {
         UserProfile profile = new UserProfile();
         profile.setUsername(registerReponse.getUsername());
         profile.setPassword(registerReponse.getPassword());
@@ -191,7 +193,8 @@ public class TestController {
         }
         return false;
     }
-// getAll chuwa tesst
+
+    // getAll chuwa tesst
     //lay danh sach thanh vien lam viec do
     @GetMapping(value = "/getAllMemberOnActionInGroup")
     public Object getAllMemberOnActionInGroup(@RequestParam int groupMakeAction, @RequestParam int actionId) {
@@ -199,9 +202,9 @@ public class TestController {
     }
 
     @PostMapping(value = "/deleteGroup")
-    public boolean deleteGroup(@RequestParam int groupId){
-        Group group1 = groupRepository.findGroupByGroupId(groupId);
-        if (group1 ==null){
+    public boolean deleteGroup(@RequestParam int groupId) {
+        Team group1 = groupRepository.findGroupByGroupId(groupId);
+        if (group1 == null) {
             return false;
         }
         groupRepository.deleteGroupByGroupId(groupId);
@@ -209,7 +212,7 @@ public class TestController {
     }
 
     @PostMapping(value = "/addGroup")
-    public BaseResponse addGroup(@RequestBody Group groupName) {
+    public BaseResponse addGroup(@RequestBody Team groupName) {
         if (groupName.getGroupName().isEmpty()) {
             BaseResponse.createResponse(0, "group name need not null");
         } else {
@@ -220,10 +223,10 @@ public class TestController {
 
     // them member trong nhom
     @PostMapping(value = "/addMemberForGroup")
-    public BaseResponse addMemberForGroup(@RequestBody UserGroup userGroup) {
-        UserGroup workDetails = userGroupRepository.findInfo(userGroup.getGroupId(), userGroup.getProfileId());
+    public BaseResponse addMemberForGroup(@RequestBody UserTeam userGroup) {
+        UserTeam workDetails = userGroupRepository.findInfo(userGroup.getGroupId(), userGroup.getProfileId());
         if (workDetails != null) {
-            return BaseResponse.createResponse(0,"Group is not exit");
+            return BaseResponse.createResponse(0, "Group is not exit");
         }
         userGroupRepository.addMemberGroup(userGroup.getGroupId(), userGroup.getProfileId());
         return BaseResponse.createResponse(userGroup);
@@ -231,8 +234,8 @@ public class TestController {
 
     // xoa member
     @PostMapping(value = "/deleteMemberOnGroup")
-    public boolean deleteMemberOnGroup(@RequestBody UserGroup userGroup) {
-        UserGroup userGroup1 = userGroupRepository.findInfo(userGroup.getGroupId(), userGroup.getProfileId());
+    public boolean deleteMemberOnGroup(@RequestBody UserTeam userGroup) {
+        UserTeam userGroup1 = userGroupRepository.findInfo(userGroup.getGroupId(), userGroup.getProfileId());
         if (userGroup1 == null) {
             return false;
         }
@@ -281,13 +284,18 @@ public class TestController {
         if (userActionSmall.getPart().isEmpty()) {
             return BaseResponse.createResponse(0, "Part is not null");
         }
-        userActionSmallRepository.insertUserAction(userActionSmall.getGroupId(), userActionSmall.getProfileId(), userActionSmall.getActionSmallId(), userActionSmall.getPart(), userActionSmall.getTimeStart(), userActionSmall.getTimeEnd());
+        userActionSmallRepository.insertUserAction(userActionSmall.getGroupId(), userActionSmall.getProfileId(),
+                userActionSmall.getActionSmallId(), userActionSmall.getPart(), userActionSmall.getTimeStart(), userActionSmall.getTimeEnd());
         return BaseResponse.createResponse(userActionSmall);
     }
 
     @PostMapping(value = "/deleteUserActionSmall")
-    public boolean deleteUserActionSmall(@RequestParam int groupId, @RequestParam int profileId, @RequestParam int actionSmallId) {
-        UserActionSmall action = userActionSmallRepository.findUserActionSmall(groupId, profileId, actionSmallId);
+    public boolean deleteUserActionSmall(@RequestParam int groupId,
+                                         @RequestParam int profileId,
+                                         @RequestParam int actionSmallId)
+    {
+        UserActionSmall action =
+                userActionSmallRepository.findUserActionSmall(groupId, profileId, actionSmallId);
         if (action == null) {
             return false;
         } else {
@@ -309,39 +317,65 @@ public class TestController {
     }
 
     @GetMapping(value = "/getAllReportOnAction")
-    public Object getAllReportOnAction(@RequestParam int actionId){
+    public Object getAllReportOnAction(@RequestParam int actionId) {
         return userReportRepository.getAllReportByActionId(actionId);
     }
     // add report
 
     @PostMapping(value = "/addReportOnAction")
-    public BaseResponse addReportOnAction(@RequestBody UserActionReport userActionReport){
-        if (userActionReport.getActionIssua().isEmpty()||userActionReport.getActionNext().isEmpty()||userActionReport.getActionActual().isEmpty()){
-            return BaseResponse.createResponse(0,"it not null");
+    public BaseResponse addReportOnAction(@RequestBody UserActionReport userActionReport) {
+        if (userActionReport.getActionIssua().isEmpty() || userActionReport.getActionNext().isEmpty() || userActionReport.getActionActual().isEmpty()) {
+            return BaseResponse.createResponse(0, "it not null");
         }
-        userActionReportRepository.addReport(userActionReport.getProfileId(),userActionReport.getActionSmallId(),userActionReport.getGroupId(),userActionReport.getActionId(),userActionReport.getActionActual(),userActionReport.getActionNext(),userActionReport.getActionIssua());
+        userActionReportRepository.addReport(userActionReport.getProfileId(), userActionReport.getActionSmallId(), userActionReport.getGroupId(), userActionReport.getActionId(), userActionReport.getActionActual(), userActionReport.getActionNext(), userActionReport.getActionIssua());
         return BaseResponse.createResponse(userActionReport);
     }
-    @PostMapping(value ="/updateReportOnAction")
+
+    @PostMapping(value = "/updateReportOnAction")
     public BaseResponse updateReportOnAction(@RequestBody UserActionReport userActionReport) {
-        List<UserActionReport> action = userActionReportRepository.findReportByUser(userActionReport.getProfileId(),userActionReport.getActionId());
+        List<UserActionReport> action = userActionReportRepository.findReportByUser(userActionReport.getProfileId(), userActionReport.getActionId());
         if (action == null) {
             BaseResponse.createResponse(0, "user not report");
         } else {
-            userActionReportRepository.updateReport(userActionReport.getReportId(),userActionReport.getActionActual(),userActionReport.getActionNext(),userActionReport.getActionIssua());
+            userActionReportRepository.updateReport(userActionReport.getReportId(), userActionReport.getActionActual(), userActionReport.getActionNext(), userActionReport.getActionIssua());
 
         }
         return BaseResponse.createResponse(userActionReport);
     }
 
     @PostMapping("/deleteReportOnAction")
-    public boolean deleteReportOnAction(@RequestParam int reportId){
+    public boolean deleteReportOnAction(@RequestParam int reportId) {
         UserActionReport actionReport = userActionReportRepository.findReport(reportId);
-        if (actionReport==null){
+        if (actionReport == null) {
             return false;
         }
         userActionReportRepository.deleteUserActionSmall(reportId);
         return true;
+    }
+
+    @PostMapping("/sendComment")
+    public BaseResponse sendComment(@RequestBody Comment comment){
+        Comment comment1 = comment;
+        if (comment1.getContent().isEmpty()){
+            BaseResponse.createResponse(0,"content is not null");
+        }
+        commentRepository.addComment(comment1.getProfileId(),comment1.getGroupId(),comment1.getActionId(),
+                comment1.getContent(),comment1.getTypeContent());
+        return BaseResponse.createResponse(comment1);
+    }
+    @PostMapping("/deleteCommentOnAction")
+    public boolean deleteCommentOnAction(@RequestParam int commentId,
+                                         @RequestParam int profileId) {
+        Comment comment = commentRepository.findCommentByUser(commentId,profileId);
+        if (comment == null) {
+            return false;
+        }
+        commentRepository.deleteCommentByUser(commentId,profileId);
+        return true;
+    }
+    @GetMapping("/getAllCommentOnAction")
+    public Object getAllCommentOnAction(@RequestParam int actionId){
+        return commentResponseRepository.getAllCommentByWork(actionId);
     }
 
 }

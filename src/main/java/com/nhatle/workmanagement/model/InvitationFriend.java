@@ -17,7 +17,7 @@ public class InvitationFriend {
     @Column(name = "is_accept")
     private int isAccept;
     @Column(name = "created_time")
-    private Date createdTime;
+    private String createdTime;
 
     public int getFriendId() {
         return friendId;
@@ -51,11 +51,11 @@ public class InvitationFriend {
         isAccept = accept;
     }
 
-    public Date getCreatedTime() {
+    public String getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(String createdTime) {
         this.createdTime = createdTime;
     }
 }

@@ -21,7 +21,7 @@ public class Action {
     @Column(name = "time_end")
     private String timeEnd;
     @Column(name = "created_time")
-    private Date createdTime;
+    private String createdTime;
 
     public int getGroupId() {
         return groupId;
@@ -72,11 +72,11 @@ public class Action {
     }
 
 
-    public Date getCreatedTime() {
+    public String getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(String createdTime) {
         this.createdTime = createdTime;
     }
 }

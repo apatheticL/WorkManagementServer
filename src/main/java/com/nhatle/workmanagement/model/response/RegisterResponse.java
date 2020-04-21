@@ -2,7 +2,7 @@ package com.nhatle.workmanagement.model.response;
 
 import java.util.Date;
 
-public class RegisterReponse {
+public class RegisterResponse {
     private String username;
     private String password;
     private String avatar;
@@ -10,7 +10,7 @@ public class RegisterReponse {
     private String addres;
     private String email;
     private String phone;
-    private Date createdtime;
+    private String createdtime;
 
     public String getUsername() {
         return username;
@@ -68,11 +68,11 @@ public class RegisterReponse {
         this.phone = phone;
     }
 
-    public Date getCreatedtime() {
+    public String getCreatedtime() {
         return createdtime;
     }
 
-    public void setCreatedtime(Date createdtime) {
+    public void setCreatedtime(String createdtime) {
         this.createdtime = createdtime;
     }
 }

@@ -5,7 +5,6 @@ import org.hibernate.annotations.GenerationTime;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "user_profile")
@@ -28,7 +27,7 @@ public class UserProfile {
     @Column(name = "created_time")
     @CreatedDate
     @Generated(value = GenerationTime.INSERT)
-    private Date createdDate;
+    private String createdTime;
 
     public int getProfileId() {
         return profileId;
@@ -94,11 +93,11 @@ public class UserProfile {
         this.email = email;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public String getCreatedTime() {
+        return createdTime;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setCreatedTime(String createdDate) {
+        this.createdTime = createdDate;
     }
 }

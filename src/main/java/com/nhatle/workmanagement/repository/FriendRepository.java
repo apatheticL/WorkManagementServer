@@ -27,7 +27,8 @@ public interface FriendRepository extends JpaRepository<FriendResponse, Integer>
     List<FriendResponse> findAllFriend(
             @Param(value = "userId") int userId
     );
-    @Query(nativeQuery = true, value = "select invitation_friend.friend_id as id,invitation_friend.sender_id as friend_id, user_profile.full_name as friend_name," +
+    @Query(nativeQuery = true, value = "select invitation_friend.friend_id as id,invitation_friend.sender_id as friend_id," +
+            " user_profile.full_name as friend_name," +
             " user_profile.avatar as friend_avatar," +
             " user_profile.username as friend_username ," +
             " user_profile.phone_number " +

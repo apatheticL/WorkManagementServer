@@ -12,7 +12,7 @@ import javax.persistence.IdClass;
 public class UserGroupResponse {
     @Id
     @Column(name = "profile_id")
-    private Integer profileId;
+    private int profileId;
    @Id
     @Column(name = "group_id")
     private int groupId;
