@@ -15,14 +15,15 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 // insert
     @Modifying
     @Query(nativeQuery = true,
-            value = "insert into action (action_id,action_name, profile_id, group_id , time_start, time_end, created_time) " +
-                    "values (default ,:workname,:creator,:groupId,:timestart,:timeend,default )")
+            value = "insert into action (action_id,action_name, profile_id, group_id , time_start, time_end, created_time,description) " +
+                    "values (default ,:workname,:creator,:groupId,:timestart,:timeend,default,:description )")
     @Transactional
     void insertAction(@Param(value = "workname") String workname,
                       @Param(value = "creator") int creator,
                       @Param(value = "groupId") int groupId,
                       @Param(value = "timestart") String timestart,
-                      @Param(value = "timeend") String timeend
+                      @Param(value = "timeend") String timeend,
+                      @Param(value = "description") String description
     );
 
     // truoc khi xoa trong bang work phai xoa trong bang detail truoc
@@ -34,10 +35,11 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "update action set action_name=:workname, time_start = :timestart,time_end = :timeend where  action_id = :id")
+    @Query(nativeQuery = true, value = "update action set action_name=:workname," +
+            " time_start = :timestart,time_end = :timeend where  action_id = :id")
     void updateAction(@Param(value = "id") int id,
                       @Param(value = "workname") String workname,
-                      @Param(value = "timestart") String timestart,
-                      @Param(value = "timeend") String timeend
+                      @Param(value = "timeend") String timeend,
+                      @Param(value = "description") String description
     );
 }

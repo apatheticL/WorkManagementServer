@@ -23,7 +23,7 @@ public interface ActionSmallRepository extends JpaRepository<ActionSmall, Intege
     @Modifying
     @Transactional
     @Query(nativeQuery = true,
-    value = "insert into action_small(action_small_id,action_id,description) values (default ,:actionId,:description)")
+    value = "insert into action_small(action_small_id,action_id,action_small_name) values (default ,:actionId,:description)")
     void addActionSmall(@Param(value = "actionId") int actionId,
                         @Param(value = "description") String description);
 

@@ -14,13 +14,11 @@ import java.util.List;
 public interface UserActionReportRepository extends JpaRepository<UserActionReport, Integer> {
     @Modifying
     @Query(nativeQuery = true,
-            value = "insert into user_action_report(report_id,profile_id,action_small_id,group_id," +
+            value = "insert into user_action_report(report_id,user_action_small_id," +
                     "action_id,action_actual,action_next,action_issua,time_report) values" +
-                    " (default,:profileId,:actionSmallId,:groupId,:actionId,:actionActual,:actionNext,:actionIssua,default)")
+                    " (default,:userActionSmallId,:actionId,:actionActual,:actionNext,:actionIssua,default)")
     @Transactional
-    void addReport(@Param(value = "profileId") int profileId,
-                   @Param(value = "actionSmallId") int actionSmallId,
-                   @Param(value = "groupId") int groupId,
+    void addReport(@Param(value = "userActionSmallId") int userActionSmallId,
                    @Param(value = "actionId") int actionId,
                    @Param(value = "actionActual") String actionActual,
                    @Param(value = "actionNext") String actionNext,
@@ -48,8 +46,8 @@ public interface UserActionReportRepository extends JpaRepository<UserActionRepo
 
     @Query(nativeQuery = true,
             value = "SELECT * FROM action_management.user_action_report " +
-                    "where  profile_id = :profileId and action_id =:actionId")
-    List<UserActionReport> findReportByUser(@Param(value = "profileId") int profileId,
+                    "where  user_action_small_id = :userActionSmallId and action_id =:actionId")
+    List<UserActionReport> findReportByUser(@Param(value = "userActionSmallId") int userActionSmallId,
                                             @Param(value = "actionId") int actionId);
 
     @Query(nativeQuery = true,

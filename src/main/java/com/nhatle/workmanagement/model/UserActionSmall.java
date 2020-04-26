@@ -4,9 +4,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "user_action_small")
-@IdClass(UserActionSmallId.class)
 public class UserActionSmall {
     @Id
+    @Column(name = "user_action_small_id")
+    private int userActionSmallId;
     @Column(name = "group_id")
     private int groupId;
     @Id
@@ -20,6 +21,14 @@ public class UserActionSmall {
     private String timeStart;
     @Column(name = "time_end")
     private String timeEnd;
+
+    public int getUserActionSmallId() {
+        return userActionSmallId;
+    }
+
+    public void setUserActionSmallId(int userActionSmallId) {
+        this.userActionSmallId = userActionSmallId;
+    }
 
     public int getActionSmallId() {
         return actionSmallId;

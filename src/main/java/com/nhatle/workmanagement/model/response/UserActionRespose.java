@@ -3,11 +3,8 @@ package com.nhatle.workmanagement.model.response;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
-
 @Entity
-public class UserActionSmallResponse {
-
+public class UserActionRespose {
     @Id
     @Column(name = "user_action_small_id")
     private int userActionSmallId;
@@ -26,12 +23,20 @@ public class UserActionSmallResponse {
     @Column(name = "action_actual")
     private String status;
 
-    public String getStatus() {
-        return status;
+    public int getUserActionSmallId() {
+        return userActionSmallId;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setUserActionSmallId(int userActionSmallId) {
+        this.userActionSmallId = userActionSmallId;
+    }
+
+    public String getActionSmallName() {
+        return actionSmallName;
+    }
+
+    public void setActionSmallName(String actionSmallName) {
+        this.actionSmallName = actionSmallName;
     }
 
     public int getProfileId() {
@@ -42,22 +47,6 @@ public class UserActionSmallResponse {
         this.profileId = profileId;
     }
 
-    public int getUserActionSmallId() {
-        return userActionSmallId;
-    }
-
-    public void setUserActionSmallId(int userActionSmallId) {
-        this.userActionSmallId = userActionSmallId;
-    }
-
-
-    public String getActionSmallName() {
-        return actionSmallName;
-    }
-
-    public void setActionSmallName(String actionSmallName) {
-        this.actionSmallName = actionSmallName;
-    }
     public String getPart() {
         return part;
     }
@@ -96,5 +85,13 @@ public class UserActionSmallResponse {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

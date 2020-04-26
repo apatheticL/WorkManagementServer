@@ -11,10 +11,12 @@ public class ActionResponse {
     private int actionId;
     @Column(name = "action_name")
     private String actionName;
-    @Column(name = "profile_id")
+    @Column(name = "profile_creator")
     private int creatorId;
     @Column(name = "group_id")
     private int groupId;
+    @Column(name = "group_name")
+    private String groupName;
     @Column(name = "full_name")
     private String nameCreator;
     @Column(name = "time_start")
@@ -23,7 +25,54 @@ public class ActionResponse {
     private String timeEnd;
     @Column(name = "created_time")
     private String createdTime;
-    private String avatar;
+    @Column(name = "number_delay")
+    private int numberDelay;
+    @Column(name = "number_action_make")
+    private int numberActionMaked;
+    @Column(name = "number_finish")
+    private int numberFinish;
+    private String description;
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getNumberFinish() {
+        return numberFinish;
+    }
+
+    public void setNumberFinish(int numberFinish) {
+        this.numberFinish = numberFinish;
+    }
+
+    public int getNumberDelay() {
+        return numberDelay;
+    }
+
+    public void setNumberDelay(int numberDelay) {
+        this.numberDelay = numberDelay;
+    }
+
+    public int getNumberActionMaked() {
+        return numberActionMaked;
+    }
+
+    public void setNumberActionMaked(int numberActionMaked) {
+        this.numberActionMaked = numberActionMaked;
+    }
+
 
     public int getActionId() {
         return actionId;
@@ -89,11 +138,4 @@ public class ActionResponse {
         this.createdTime = createdTime;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
 }

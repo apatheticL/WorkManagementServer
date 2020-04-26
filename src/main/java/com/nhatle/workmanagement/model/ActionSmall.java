@@ -15,6 +15,7 @@ public class ActionSmall {
     private int actionSmallId;
     @Column(name ="action_id")
     private int actionId;
+    @Column(name = "action_small_name")
     private String description;
 
     public int getActionSmallId() {

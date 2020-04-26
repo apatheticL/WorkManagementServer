@@ -22,6 +22,15 @@ public class Action {
     private String timeEnd;
     @Column(name = "created_time")
     private String createdTime;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public int getGroupId() {
         return groupId;

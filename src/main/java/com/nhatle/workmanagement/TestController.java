@@ -45,6 +45,8 @@ public class TestController {
     private CommentRepository commentRepository;
     @Autowired
     private CommentResponseRepository commentResponseRepository;
+//    @Autowired
+//    private UserActionRepository userActionRepository;
     // profile
     @PostMapping(value = "/login")
     public BaseResponse login(@RequestBody LoginResponse loginRequest) {
@@ -70,7 +72,9 @@ public class TestController {
         }
         UserProfile profile1 = profileRepository.findOneByUsername(profile.getUsername());
         if (profile1 == null) {
-            profileRepository.insertAccount(profile.getUsername(), profile.getPassword(), profile.getAvatar(), profile.getFullName(), profile.getAddress(), profile.getPhoneNumber(), profile.getEmail());
+            profileRepository.insertAccount(profile.getUsername(), profile.getPassword(),
+                    profile.getAvatar(), profile.getFullName(), profile.getAddress(),
+                    profile.getPhoneNumber(), profile.getEmail());
 
         } else {
             BaseResponse.createResponse(0, "username consist");
@@ -95,7 +99,9 @@ public class TestController {
         if (profileTwo == null) {
             BaseResponse.createResponse(0, "error when to update");
         } else {
-            profileRepository.updateProfile(profileOne.getProfileId(), profileOne.getAvatar(), profileOne.getFullName(), profileOne.getAddress(), profileOne.getEmail(), profileOne.getPhoneNumber());
+            profileRepository.updateProfile(profileOne.getProfileId(),
+                    profileOne.getAvatar(), profileOne.getFullName(),
+                    profileOne.getAddress(), profileOne.getEmail(), profileOne.getPhoneNumber());
         }
         return BaseResponse.createResponse(profileOne);
     }
@@ -137,9 +143,11 @@ public class TestController {
         friend1.setReceiverId(friend.getReceiverId());
         friend1.setAccept(friend.isAccept());
         friend1.setCreatedTime(friend.getCreatedTime());
-        InvitationFriend friend2 = friendFriendRepository.getInfoSender(friend1.getSenderId(), friend1.getReceiverId());
+        InvitationFriend friend2 = friendFriendRepository.getInfoSender(friend1.getSenderId(),
+                friend1.getReceiverId());
         if (friend2 == null) {
-            friendFriendRepository.senderAddFriend(friend1.getSenderId(), friend1.getReceiverId(), friend1.isAccept());
+            friendFriendRepository.senderAddFriend(friend1.getSenderId(),
+                    friend1.getReceiverId(), friend1.isAccept());
 
         } else {
             BaseResponse.createResponse(0, "sender consist");
@@ -149,14 +157,14 @@ public class TestController {
 
     // work
     // getallwork with member is user
-    @GetMapping(value = "/getAllWorkWithUserCreate")
-    public Object getAllWorkWithUserCreate(@RequestParam int userid) {
-        return workResponseRepository.getAllWorkByUserCreate(userid);
-    }
+//    @GetMapping(value = "/getAllUserActionSmallIsFinish")
+//    public Object getAllUserActionSmallIsFinish(@RequestParam int actionId) {
+//        return userActionRepository.getAllUserActionSmallIsFinish(actionId);
+//    }
 
     @GetMapping(value = "/getAllWorkWithUserIsMember")
     public Object getAllWorkWithUserIsMember(@RequestParam int profileId) {
-        return workResponseRepository.getAllWorkByUserIsMember(profileId);
+        return workResponseRepository.getAllWork(profileId);
     }
 
 
@@ -166,7 +174,8 @@ public class TestController {
         if (work.getActionName().equals("")) {
             return BaseResponse.createResponse(0, "work name not null");
         } else {
-            actionRepository.insertAction(work.getActionName(), work.getCreatorId(), work.getGroupId(), work.getTimeStart(), work.getTimeEnd());
+            actionRepository.insertAction(work.getActionName(), work.getCreatorId(),
+                    work.getGroupId(), work.getTimeStart(), work.getTimeEnd(),work.getDescription());
         }
         return BaseResponse.createResponse(work);
     }
@@ -178,7 +187,8 @@ public class TestController {
         if (work1 == null) {
             BaseResponse.createResponse(0, "work not exit");
         } else {
-            actionRepository.updateAction(work.getActionId(), work.getActionName(), work.getTimeStart(), work.getTimeEnd());
+            actionRepository.updateAction(work.getActionId(), work.getActionName()
+                    , work.getTimeEnd(),work.getDescription());
         }
         return BaseResponse.createResponse(work);
     }
@@ -277,7 +287,10 @@ public class TestController {
     public Object getAllUserMakeActionSmall(@RequestParam int actionId) {
         return userActionSmallResponseRepository.getAllUserActionSmall(actionId);
     }
-
+    @GetMapping(value = "/getAllActionSmallOfUser")
+    public Object getAllActionSmallOfUser(@RequestParam int actionId,@RequestParam int profileId) {
+        return userActionSmallResponseRepository.getAllActionSmallOfUser(actionId,profileId);
+    }
     // add user action small
     @PostMapping(value = "/addUserActionSmall")
     public BaseResponse addUserActionSmall(@RequestBody UserActionSmall userActionSmall) {
@@ -285,32 +298,35 @@ public class TestController {
             return BaseResponse.createResponse(0, "Part is not null");
         }
         userActionSmallRepository.insertUserAction(userActionSmall.getGroupId(), userActionSmall.getProfileId(),
-                userActionSmall.getActionSmallId(), userActionSmall.getPart(), userActionSmall.getTimeStart(), userActionSmall.getTimeEnd());
+                userActionSmall.getActionSmallId(), userActionSmall.getPart(), userActionSmall.getTimeStart(),
+                userActionSmall.getTimeEnd());
         return BaseResponse.createResponse(userActionSmall);
     }
 
     @PostMapping(value = "/deleteUserActionSmall")
-    public boolean deleteUserActionSmall(@RequestParam int groupId,
-                                         @RequestParam int profileId,
-                                         @RequestParam int actionSmallId)
+    public boolean deleteUserActionSmall(@RequestParam int userActionSmallId)
     {
         UserActionSmall action =
-                userActionSmallRepository.findUserActionSmall(groupId, profileId, actionSmallId);
+                userActionSmallRepository.findUserActionSmall(userActionSmallId);
         if (action == null) {
             return false;
         } else {
-            userActionSmallRepository.deleteUserActionSmall(actionSmallId, profileId, groupId);
+            userActionSmallRepository.deleteUserActionSmall(userActionSmallId);
             return true;
         }
     }
 
     @PostMapping(value = "/updateUserActionSmall")
     public BaseResponse updateUserActionSmall(@RequestBody UserActionSmall userActionSmall) {
-        UserActionSmall action = userActionSmallRepository.findUserActionSmall(userActionSmall.getGroupId(), userActionSmall.getProfileId(), userActionSmall.getActionSmallId());
+        UserActionSmall action =
+                userActionSmallRepository.findUserActionSmall(userActionSmall.getUserActionSmallId());
         if (action == null) {
             BaseResponse.createResponse(0, "user action small not exit");
         } else {
-            userActionSmallRepository.updateActionSmallByUser(userActionSmall.getGroupId(), userActionSmall.getProfileId(), userActionSmall.getActionSmallId(), userActionSmall.getPart(), userActionSmall.getTimeStart(), userActionSmall.getTimeEnd());
+            userActionSmallRepository.updateActionSmallByUser(userActionSmall.getGroupId(),
+                    userActionSmall.getProfileId(), userActionSmall.getActionSmallId(),
+                    userActionSmall.getUserActionSmallId(),userActionSmall.getPart(),
+                    userActionSmall.getTimeStart(), userActionSmall.getTimeEnd());
 
         }
         return BaseResponse.createResponse(userActionSmall);
@@ -324,20 +340,27 @@ public class TestController {
 
     @PostMapping(value = "/addReportOnAction")
     public BaseResponse addReportOnAction(@RequestBody UserActionReport userActionReport) {
-        if (userActionReport.getActionIssua().isEmpty() || userActionReport.getActionNext().isEmpty() || userActionReport.getActionActual().isEmpty()) {
+        if (userActionReport.getActionIssua().isEmpty() || userActionReport.getActionNext().isEmpty()
+                || userActionReport.getActionActual().isEmpty()) {
             return BaseResponse.createResponse(0, "it not null");
         }
-        userActionReportRepository.addReport(userActionReport.getProfileId(), userActionReport.getActionSmallId(), userActionReport.getGroupId(), userActionReport.getActionId(), userActionReport.getActionActual(), userActionReport.getActionNext(), userActionReport.getActionIssua());
+        userActionReportRepository.addReport(userActionReport.getUserActionSmallId(),
+                userActionReport.getActionId(), userActionReport.getActionActual(),
+                userActionReport.getActionNext(), userActionReport.getActionIssua());
         return BaseResponse.createResponse(userActionReport);
     }
 
     @PostMapping(value = "/updateReportOnAction")
     public BaseResponse updateReportOnAction(@RequestBody UserActionReport userActionReport) {
-        List<UserActionReport> action = userActionReportRepository.findReportByUser(userActionReport.getProfileId(), userActionReport.getActionId());
+        List<UserActionReport> action =
+                userActionReportRepository.findReportByUser(userActionReport.getUserActionSmallId(),
+                        userActionReport.getActionId());
         if (action == null) {
             BaseResponse.createResponse(0, "user not report");
         } else {
-            userActionReportRepository.updateReport(userActionReport.getReportId(), userActionReport.getActionActual(), userActionReport.getActionNext(), userActionReport.getActionIssua());
+            userActionReportRepository.updateReport(userActionReport.getReportId(),
+                    userActionReport.getActionActual(), userActionReport.getActionNext(),
+                    userActionReport.getActionIssua());
 
         }
         return BaseResponse.createResponse(userActionReport);
@@ -377,5 +400,4 @@ public class TestController {
     public Object getAllCommentOnAction(@RequestParam int actionId){
         return commentResponseRepository.getAllCommentByWork(actionId);
     }
-
 }

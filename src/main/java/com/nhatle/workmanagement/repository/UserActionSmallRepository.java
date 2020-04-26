@@ -13,15 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserActionSmallRepository extends JpaRepository<UserActionSmall, Integer> {
 
     @Query(nativeQuery = true,
-    value = "SELECT * FROM user_action_small where group_id = :groupId and profile_id =:profileId and action_small_id =:actionSmallId")
-    UserActionSmall findUserActionSmall(@Param(value = "groupId") int groupId,
-                                        @Param(value = "profileId") int profileId,
-                                        @Param(value = "actionSmallId") int actionSmallId);
+    value = "SELECT * FROM user_action_small where user_action_small_id = :userActionSmallId")
+    UserActionSmall findUserActionSmall(@Param(value = "userActionSmallId") int userActionSmallId);
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "insert into user_action_small(group_id,profile_id,action_small_id,part,time_start,time_end) " +
-                    "values (:groupId,:profileId,:actionSmallId,:part,:timeStart,:timeEnd) ")
+            value = "insert into user_action_small(user_action_small_id,group_id,profile_id,action_small_id,part,time_start,time_end) " +
+                    "values (default ,:groupId,:profileId,:actionSmallId,:part,:timeStart,:timeEnd) ")
     @Transactional
     void insertUserAction(@Param(value = "groupId") int groupId,
                        @Param(value = "profileId") int profileId,
@@ -34,11 +32,13 @@ public interface UserActionSmallRepository extends JpaRepository<UserActionSmall
     @Modifying
     @Query(nativeQuery = true,
             value = "update user_action_small " +
-                    "set group_id = :groupId , profile_id = :profileId, action_small_id = :actionSmallId, part=:part,time_start = :timeStart, time_end = :timeEnd" +
-                    " where group_id=:groupId and profile_id =:profileId and action_small_id =:actionSmallId")
+                    "set group_id = :groupId , profile_id = :profileId, action_small_id = :actionSmallId, " +
+                    " part=:part,time_start = :timeStart, time_end = :timeEnd" +
+                    " where user_action_small_id =:userActionSmallId")
     void updateActionSmallByUser(@Param(value = "groupId") int groupId,
                        @Param(value = "profileId") int profileId,
                        @Param(value = "actionSmallId") int actionSmallId,
+                       @Param(value = "userActionSmallId") int userActionSmallId,
                        @Param(value = "part") String part,
                        @Param(value = "timeStart") String timeStart,
                        @Param(value = "timeEnd") String timeEnd
@@ -46,11 +46,9 @@ public interface UserActionSmallRepository extends JpaRepository<UserActionSmall
     @Transactional
     @Modifying
     @Query(value = "delete from user_action_small " +
-            "where group_id =:groupId and profile_id=:profileId and action_small_id = :actionSmallId and group_id=:groupId",
+            "where user_action_small_id = :userActionSmallId",
             nativeQuery = true)
-    void deleteUserActionSmall(@Param("actionSmallId") int actionSmallId,
-                                  @Param("profileId") int profileId,
-                                  @Param("groupId") int groupId
+    void deleteUserActionSmall(@Param("userActionSmallId") int userActionSmallId
                                   );
 
 }
