@@ -23,6 +23,16 @@ public class Action {
     @Column(name = "created_time")
     private String createdTime;
     private String description;
+    @Column(name = "action_status")
+    private String actionStatus;
+
+    public String getActionStatus() {
+        return actionStatus;
+    }
+
+    public void setActionStatus(String actionStatus) {
+        this.actionStatus = actionStatus;
+    }
 
     public String getDescription() {
         return description;

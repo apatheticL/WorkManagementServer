@@ -32,6 +32,16 @@ public class ActionResponse {
     @Column(name = "number_finish")
     private int numberFinish;
     private String description;
+    @Column(name = "action_status")
+    private String actionStatus;
+
+    public String getActionStatus() {
+        return actionStatus;
+    }
+
+    public void setActionStatus(String actionStatus) {
+        this.actionStatus = actionStatus;
+    }
 
     public String getGroupName() {
         return groupName;

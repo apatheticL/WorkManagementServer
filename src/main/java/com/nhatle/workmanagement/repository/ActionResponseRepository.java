@@ -19,7 +19,7 @@ public interface ActionResponseRepository extends JpaRepository<ActionResponse,I
                     "action.profile_id as profile_creator, team.group_name" +
                     " user_profile.full_name," +
                     "action.group_id, action.time_start, action.time_end, action.description" +
-                    " action.created_time," +
+                    " action.created_time, action.action_status" +
                     " (select count(user_action_report.report_id) from user_action_report " +
                     " join user_action_small on user_action_report.user_action_small_id = user_action_small.user_action_small_id" +
                     "  where user_action_report.time_report>user_action_small.time_end " +

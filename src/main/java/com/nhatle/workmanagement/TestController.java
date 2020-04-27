@@ -186,7 +186,8 @@ public class TestController {
             return BaseResponse.createResponse(0, "work name not null");
         } else {
             actionRepository.insertAction(work.getActionName(), work.getCreatorId(),
-                    work.getGroupId(), work.getTimeStart(), work.getTimeEnd(), work.getDescription());
+                    work.getGroupId(), work.getTimeStart(), work.getTimeEnd(),work.getActionStatus(),
+                    work.getDescription());
         }
         return BaseResponse.createResponse(work);
     }
@@ -199,17 +200,27 @@ public class TestController {
             BaseResponse.createResponse(0, "work not exit");
         } else {
             actionRepository.updateAction(work.getActionId(), work.getActionName()
-                    , work.getTimeEnd(), work.getDescription());
+                    , work.getTimeEnd(),work.getActionStatus(), work.getDescription(),work.getCreatorId());
         }
         return BaseResponse.createResponse(work);
     }
 
+    @PostMapping(value = "/updateStatusWork")
+    public boolean updateStatusWork(@RequestParam int id,
+                                    @RequestParam String status){
+        if (actionRepository.countActionSmallFish(id)==actionRepository.countUserActionSmall(id)){
+            actionRepository.updateStatusAction(id,status);
+            return true;
+        }
+        return false;
+    }
+
     //deletework dang loi
     @PostMapping(value = "/deleteWork")
-    public boolean deleteWork(@RequestParam int idW) {
+    public boolean deleteWork(@RequestParam int idW,@RequestParam int profileId) {
         Action work1 = actionRepository.findWorkById(idW);
         if (work1 != null) {
-            actionRepository.deleteActionById(idW);
+            actionRepository.deleteActionById(idW,profileId);
             return true;
         }
         return false;
