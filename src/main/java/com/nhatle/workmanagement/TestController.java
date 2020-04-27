@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -17,11 +16,11 @@ public class TestController {
     @Autowired
     private UserProfileRepository profileRepository;
     @Autowired
-    private FriendRepository friendRepository;
+    private FriendResponseRepository friendResponseRepository;
     @Autowired
     private FriendIdRepository friendIdRepository;
     @Autowired
-    private FriendFriendRepository friendFriendRepository;
+    private FriendRepository friendRepository;
     @Autowired
     private ActionResponseRepository workResponseRepository;
     @Autowired
@@ -111,9 +110,19 @@ public class TestController {
     // friend le20051998@gmail.com
     @GetMapping(value = "/getAllFriendByUser")
     public Object getAllFriendByUser(@RequestParam int userId) {
-        return friendRepository.findAllFriend(userId);
+        return friendResponseRepository.findAllFriend(userId);
     }
-
+    @PostMapping(value = "/acceptedFriend")
+    public boolean acceptedFriend(@RequestBody InvitationFriend invitationFriend){
+        InvitationFriend a = friendRepository.getInfoSender(invitationFriend.getSenderId(),
+                invitationFriend.getReceiverId());
+        if (a==null){
+            return false;
+        }
+        friendRepository.acceptRequest(invitationFriend.getReceiverId(),invitationFriend.getSenderId(),
+                invitationFriend.isAccept(),invitationFriend.getFriendId());
+        return true;
+    }
     @GetMapping(value = "/getAllNotFriend")
     public Object getAllNotFriend(@RequestParam int idUser) {
         List<FriendId> friendIds = friendIdRepository.findAllNotFriend(idUser);
@@ -133,7 +142,7 @@ public class TestController {
 
     @GetMapping(value = "/getAllUserSenderFriend")
     public Object getAllUserSender(@RequestParam int idProfile) {
-        return friendRepository.getAllFriendSender(idProfile);
+        return friendResponseRepository.getAllFriendSender(idProfile);
     }
 
     // gui loi moi ket ban
@@ -145,10 +154,10 @@ public class TestController {
         friend1.setReceiverId(friend.getReceiverId());
         friend1.setAccept(friend.isAccept());
         friend1.setCreatedTime(friend.getCreatedTime());
-        InvitationFriend friend2 = friendFriendRepository.getInfoSender(friend1.getSenderId(),
+        InvitationFriend friend2 = friendRepository.getInfoSender(friend1.getSenderId(),
                 friend1.getReceiverId());
         if (friend2 == null) {
-            friendFriendRepository.senderAddFriend(friend1.getSenderId(),
+            friendRepository.senderAddFriend(friend1.getSenderId(),
                     friend1.getReceiverId(), friend1.isAccept());
 
         } else {
@@ -234,24 +243,7 @@ public class TestController {
     }
 
     // them member trong nhom
-    @PostMapping(value = "/addMemberForGroup")
-    public List<BaseResponse> addMemberForGroup(@RequestBody List<UserTeam> userGroup) {
-        List<BaseResponse> baseResponses = new ArrayList<>();
-        List<UserTeam>userTeams = new ArrayList<>();
-        for (UserTeam userTem :
-                userGroup) {
-            UserTeam workDetails = userGroupRepository.findInfo(userTem.getGroupId(), userTem.getProfileId());
-            if (workDetails != null) {
-                baseResponses.add(BaseResponse.createResponse(0, "Group is not exit"));
-            }
-            else {
-                userTeams.add(userTem);
-                baseResponses.add(BaseResponse.createResponse(userTem));
-            }
-        }
-        userGroupRepository.saveAll(userTeams);
-        return baseResponses;
-    }
+
 
     // xoa member
     @PostMapping(value = "/deleteMemberOnGroup")
@@ -303,7 +295,24 @@ public class TestController {
     public Object getAllActionSmallOfUser(@RequestParam int actionId, @RequestParam int profileId) {
         return userActionSmallResponseRepository.getAllActionSmallOfUser(actionId, profileId);
     }
-
+    @PostMapping(value = "/addMemberForGroup")
+    public List<BaseResponse> addMemberForGroup(@RequestBody List<UserTeam> userGroup) {
+        List<BaseResponse> baseResponses = new ArrayList<>();
+        List<UserTeam>userTeams = new ArrayList<>();
+        for (UserTeam userTem :
+                userGroup) {
+            UserTeam workDetails = userGroupRepository.findInfo(userTem.getGroupId(), userTem.getProfileId());
+            if (workDetails != null) {
+                baseResponses.add(BaseResponse.createResponse(0, "Group is not exit"));
+            }
+            else {
+                userTeams.add(userTem);
+                baseResponses.add(BaseResponse.createResponse(userTem));
+            }
+        }
+        userGroupRepository.saveAll(userTeams);
+        return baseResponses;
+    }
     // add user action small
     @PostMapping(value = "/addUserActionSmall")
     public BaseResponse addUserActionSmall(@RequestBody UserActionSmall userActionSmall) {
