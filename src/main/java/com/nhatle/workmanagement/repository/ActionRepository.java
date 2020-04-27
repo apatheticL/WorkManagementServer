@@ -36,7 +36,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "update action set action_name=:workname," +
-            " time_start = :timestart,time_end = :timeend where  action_id = :id")
+            " time_start = :timestart,time_end = :timeend , descripttion = :description where  action_id = :id")
     void updateAction(@Param(value = "id") int id,
                       @Param(value = "workname") String workname,
                       @Param(value = "timeend") String timeend,

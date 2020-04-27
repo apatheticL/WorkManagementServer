@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -45,7 +46,8 @@ public class TestController {
     private CommentRepository commentRepository;
     @Autowired
     private CommentResponseRepository commentResponseRepository;
-//    @Autowired
+
+    //    @Autowired
 //    private UserActionRepository userActionRepository;
     // profile
     @PostMapping(value = "/login")
@@ -175,7 +177,7 @@ public class TestController {
             return BaseResponse.createResponse(0, "work name not null");
         } else {
             actionRepository.insertAction(work.getActionName(), work.getCreatorId(),
-                    work.getGroupId(), work.getTimeStart(), work.getTimeEnd(),work.getDescription());
+                    work.getGroupId(), work.getTimeStart(), work.getTimeEnd(), work.getDescription());
         }
         return BaseResponse.createResponse(work);
     }
@@ -188,7 +190,7 @@ public class TestController {
             BaseResponse.createResponse(0, "work not exit");
         } else {
             actionRepository.updateAction(work.getActionId(), work.getActionName()
-                    , work.getTimeEnd(),work.getDescription());
+                    , work.getTimeEnd(), work.getDescription());
         }
         return BaseResponse.createResponse(work);
     }
@@ -233,13 +235,22 @@ public class TestController {
 
     // them member trong nhom
     @PostMapping(value = "/addMemberForGroup")
-    public BaseResponse addMemberForGroup(@RequestBody UserTeam userGroup) {
-        UserTeam workDetails = userGroupRepository.findInfo(userGroup.getGroupId(), userGroup.getProfileId());
-        if (workDetails != null) {
-            return BaseResponse.createResponse(0, "Group is not exit");
+    public List<BaseResponse> addMemberForGroup(@RequestBody List<UserTeam> userGroup) {
+        List<BaseResponse> baseResponses = new ArrayList<>();
+        List<UserTeam>userTeams = new ArrayList<>();
+        for (UserTeam userTem :
+                userGroup) {
+            UserTeam workDetails = userGroupRepository.findInfo(userTem.getGroupId(), userTem.getProfileId());
+            if (workDetails != null) {
+                baseResponses.add(BaseResponse.createResponse(0, "Group is not exit"));
+            }
+            else {
+                userTeams.add(userTem);
+                baseResponses.add(BaseResponse.createResponse(userTem));
+            }
         }
-        userGroupRepository.addMemberGroup(userGroup.getGroupId(), userGroup.getProfileId());
-        return BaseResponse.createResponse(userGroup);
+        userGroupRepository.saveAll(userTeams);
+        return baseResponses;
     }
 
     // xoa member
@@ -287,10 +298,12 @@ public class TestController {
     public Object getAllUserMakeActionSmall(@RequestParam int actionId) {
         return userActionSmallResponseRepository.getAllUserActionSmall(actionId);
     }
+
     @GetMapping(value = "/getAllActionSmallOfUser")
-    public Object getAllActionSmallOfUser(@RequestParam int actionId,@RequestParam int profileId) {
-        return userActionSmallResponseRepository.getAllActionSmallOfUser(actionId,profileId);
+    public Object getAllActionSmallOfUser(@RequestParam int actionId, @RequestParam int profileId) {
+        return userActionSmallResponseRepository.getAllActionSmallOfUser(actionId, profileId);
     }
+
     // add user action small
     @PostMapping(value = "/addUserActionSmall")
     public BaseResponse addUserActionSmall(@RequestBody UserActionSmall userActionSmall) {
@@ -304,8 +317,7 @@ public class TestController {
     }
 
     @PostMapping(value = "/deleteUserActionSmall")
-    public boolean deleteUserActionSmall(@RequestParam int userActionSmallId)
-    {
+    public boolean deleteUserActionSmall(@RequestParam int userActionSmallId) {
         UserActionSmall action =
                 userActionSmallRepository.findUserActionSmall(userActionSmallId);
         if (action == null) {
@@ -325,7 +337,7 @@ public class TestController {
         } else {
             userActionSmallRepository.updateActionSmallByUser(userActionSmall.getGroupId(),
                     userActionSmall.getProfileId(), userActionSmall.getActionSmallId(),
-                    userActionSmall.getUserActionSmallId(),userActionSmall.getPart(),
+                    userActionSmall.getUserActionSmallId(), userActionSmall.getPart(),
                     userActionSmall.getTimeStart(), userActionSmall.getTimeEnd());
 
         }
@@ -377,27 +389,29 @@ public class TestController {
     }
 
     @PostMapping("/sendComment")
-    public BaseResponse sendComment(@RequestBody Comment comment){
+    public BaseResponse sendComment(@RequestBody Comment comment) {
         Comment comment1 = comment;
-        if (comment1.getContent().isEmpty()){
-            BaseResponse.createResponse(0,"content is not null");
+        if (comment1.getContent().isEmpty()) {
+            BaseResponse.createResponse(0, "content is not null");
         }
-        commentRepository.addComment(comment1.getProfileId(),comment1.getGroupId(),comment1.getActionId(),
-                comment1.getContent(),comment1.getTypeContent());
+        commentRepository.addComment(comment1.getProfileId(), comment1.getGroupId(), comment1.getActionId(),
+                comment1.getContent(), comment1.getTypeContent());
         return BaseResponse.createResponse(comment1);
     }
+
     @PostMapping("/deleteCommentOnAction")
     public boolean deleteCommentOnAction(@RequestParam int commentId,
                                          @RequestParam int profileId) {
-        Comment comment = commentRepository.findCommentByUser(commentId,profileId);
+        Comment comment = commentRepository.findCommentByUser(commentId, profileId);
         if (comment == null) {
             return false;
         }
-        commentRepository.deleteCommentByUser(commentId,profileId);
+        commentRepository.deleteCommentByUser(commentId, profileId);
         return true;
     }
+
     @GetMapping("/getAllCommentOnAction")
-    public Object getAllCommentOnAction(@RequestParam int actionId){
+    public Object getAllCommentOnAction(@RequestParam int actionId) {
         return commentResponseRepository.getAllCommentByWork(actionId);
     }
 }
