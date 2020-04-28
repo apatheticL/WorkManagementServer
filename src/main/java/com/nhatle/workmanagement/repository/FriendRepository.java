@@ -32,4 +32,14 @@ public interface FriendRepository extends JpaRepository<InvitationFriend,Integer
                        @Param(value = "isAccept") int isAccept,
                        @Param(value = "friendId") int friendId
     );
+
+    @Query(nativeQuery = true,
+    value = "select * from invitation_friend where friend_id = :friendId")
+    InvitationFriend getInvitationFriendBy(@Param(value = "friendId")int friendId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true,
+    value = "delete from invitation_friend where invitation_friend.friend_id = :friendId")
+    void deleteInvitationFriendByFriendId(@Param(value = "friendId") int friendId);
 }

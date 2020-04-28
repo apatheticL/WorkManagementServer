@@ -123,6 +123,15 @@ public class TestController {
                 invitationFriend.isAccept(),invitationFriend.getFriendId());
         return true;
     }
+    @PostMapping(value = "/deleteInvitationFriend")
+    public Boolean deleteInvitationFriend(@RequestParam int friendId){
+        InvitationFriend friend = friendRepository.getInvitationFriendBy(friendId);
+        if (friend==null){
+            return false;
+        }
+        friendRepository.deleteInvitationFriendByFriendId(friendId);
+        return true;
+    }
     @GetMapping(value = "/getAllNotFriend")
     public Object getAllNotFriend(@RequestParam int idUser) {
         List<FriendId> friendIds = friendIdRepository.findAllNotFriend(idUser);
