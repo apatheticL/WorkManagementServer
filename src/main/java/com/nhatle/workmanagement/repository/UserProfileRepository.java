@@ -15,7 +15,9 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Intege
     @Query(nativeQuery = true, value = "select * from user_profile where  username = :username")
     UserProfile findOneByUsername(@Param(value = "username") String username);
 
-    @Query(nativeQuery = true, value = "select * from user_profile where  profile_id = :id")
+    @Query(nativeQuery = true, value = "SELECT profile_id,username,password,full_name,avatar,addres," +
+            "phone_number,email,DATE_FORMAT(created_time, '%Y-%m-%d') as created_time " +
+            "FROM action_management.user_profile where  profile_id = :id")
     UserProfile findOneByProfileId(@Param(value = "id") int id);
 
     @Modifying

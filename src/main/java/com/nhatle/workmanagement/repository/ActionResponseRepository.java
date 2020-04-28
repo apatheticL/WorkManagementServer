@@ -16,14 +16,15 @@ public interface ActionResponseRepository extends JpaRepository<ActionResponse,I
 
     @Query(nativeQuery = true,
             value = "select action.action_id,action.action_name," +
-                    "action.profile_id as profile_creator, team.group_name" +
+                    "action.profile_id as profile_creator, team.group_name ," +
                     " user_profile.full_name," +
-                    "action.group_id, action.time_start, action.time_end, action.description" +
-                    " action.created_time, action.action_status" +
-                    " (select count(user_action_report.report_id) from user_action_report " +
+                    "action.group_id,DATE_FORMAT(time_start, '%Y-%m-%d') as time_start, " +
+                    "DATE_FORMAT(time_end, '%Y-%m-%d') as time_end, action.description," +
+                    " DATE_FORMAT(action.created_time, '%Y-%m-%d') as created_time, action.action_status," +
+                    " ( select count(user_action_report.report_id) from user_action_report " +
                     " join user_action_small on user_action_report.user_action_small_id = user_action_small.user_action_small_id" +
                     "  where user_action_report.time_report>user_action_small.time_end " +
-                    " and user_action_report.action_id=action.action_id) as number_delay, " +
+                    " and user_action_report.action_id=action.action_id ) as number_delay, " +
                     "(select count(user_action_small.user_action_small_id)  from action_small" +
                     " join  user_action_small  on action_small.action_small_id = user_action_small.action_small_id" +
                     " where action_small.action_id = action.action_id ) as number_action_make," +
