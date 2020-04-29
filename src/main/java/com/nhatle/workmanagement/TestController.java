@@ -265,12 +265,15 @@ public class TestController {
 
     @PostMapping(value = "/addGroup")
     public BaseResponse addGroup(@RequestBody Team groupName) {
-        if (groupName.getGroupName().isEmpty()) {
+        Team team = groupName;
+        if (team.getGroupName().isEmpty()) {
             BaseResponse.createResponse(0, "group name need not null");
         } else {
-            groupRepository.addGroup(groupName.getGroupName());
+            groupRepository.addGroup(team.getGroupName());
+            int id = groupRepository.getIdInserted();
+            team.setGroupId(id);
         }
-        return BaseResponse.createResponse(groupName);
+        return BaseResponse.createResponse(team);
     }
 
     // them member trong nhom
@@ -435,7 +438,7 @@ public class TestController {
             BaseResponse.createResponse(0, "content is not null");
         }
         commentRepository.addComment(comment1.getProfileId(), comment1.getGroupId(), comment1.getActionId(),
-                comment1.getContent(), comment1.getTypeContent());
+                comment1.getContent(), comment1.getType());
         return BaseResponse.createResponse(comment1);
     }
 

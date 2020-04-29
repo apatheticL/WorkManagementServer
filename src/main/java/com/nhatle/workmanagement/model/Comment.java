@@ -16,16 +16,16 @@ public class Comment {
     private int groupId;
     private String content;
     @Column(name = "type_content")
-    private int typeContent;
+    private int type;
     @Column(name = "created_time")
     private String createdTime;
 
-    public int getTypeContent() {
-        return typeContent;
+    public int getType() {
+        return type;
     }
 
-    public void setTypeContent(int type) {
-        this.typeContent = type;
+    public void setType(int type) {
+        this.type = type;
     }
 
     public int getGroupId() {

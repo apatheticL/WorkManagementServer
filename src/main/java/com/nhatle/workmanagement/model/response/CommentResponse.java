@@ -20,16 +20,16 @@ public class CommentResponse {
     private int actionId;
     private String content;
     @Column(name = "type_content")
-    private int typeContent;
+    private int type;
     @Column(name = "created_time")
     private String createdTime;
 
     public int getType() {
-        return typeContent;
+        return type;
     }
 
-    public void setType(int type) {
-        this.typeContent = type;
+    public void setType(int typeContent) {
+        this.type = typeContent;
     }
 
     public String getAvatar() {

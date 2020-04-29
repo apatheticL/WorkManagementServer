@@ -16,6 +16,8 @@ public interface GroupRepository extends JpaRepository<Team,Integer> {
     @Transactional
     void addGroup(@Param(value = "groupName") String groupName);
 
+    @Query(nativeQuery = true,value = "SELECT LAST_INSERT_ID()")
+    int getIdInserted();
     @Query(nativeQuery = true, value = "select * from team where team.group_id =:groupId")
     Team findGroupByGroupId(@Param(value = "groupId") int groupId);
 
