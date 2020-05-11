@@ -17,16 +17,18 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
     @Query(nativeQuery = true,
             value = "insert into action (action_id,action_name, profile_id, group_id ," +
                     "time_start, time_end, created_time,action_status,description) " +
-                    "values (default ,:workname,:creator,:groupId,:timestart,:timeend,default,:status,:description )")
+                    "values (default ,:workname,:creator,:groupId,:timestart,:timeend,default,:statuss,:descriptions )")
     @Transactional
     void insertAction(@Param(value = "workname") String workname,
                       @Param(value = "creator") int creator,
                       @Param(value = "groupId") int groupId,
                       @Param(value = "timestart") String timestart,
                       @Param(value = "timeend") String timeend,
-                      @Param(value = "status") String status,
-                      @Param(value = "description") String description
+                      @Param(value = "statuss") String statuss,
+                      @Param(value = "descriptions") String descriptions
     );
+    @Query(nativeQuery = true,value = "SELECT LAST_INSERT_ID()")
+    int getIdInserted();
 
     // truoc khi xoa trong bang work phai xoa trong bang detail truoc
     @Transactional
@@ -39,7 +41,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "update action set action_name=:workname," +
-            " time_start = :timestart,time_end = :timeend ,action_status=:status, description = :description " +
+            " time_end = :timeend ,action_status=:status, description = :description " +
             " where  action_id = :id and profile_id = :profileId")
     void updateAction(@Param(value = "id") int id,
                       @Param(value = "workname") String workname,

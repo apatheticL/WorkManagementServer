@@ -61,5 +61,7 @@ public class SocketManager {
                 ioClientMap.put(s, socketIOClient);
             }
         });
+
+        socketIOServer.start();
     }
 }

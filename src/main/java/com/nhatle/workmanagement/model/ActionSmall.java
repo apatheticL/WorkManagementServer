@@ -2,15 +2,13 @@ package com.nhatle.workmanagement.model;
 
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "action_small")
 public class ActionSmall {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "action_small_id")
     private int actionSmallId;
     @Column(name ="action_id")

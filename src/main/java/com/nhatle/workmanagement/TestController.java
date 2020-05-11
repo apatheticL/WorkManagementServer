@@ -94,6 +94,7 @@ public class TestController {
         profileOne.setProfileId(profile.getProfileId());
         profileOne.setFullName(profile.getFullName());
         profileOne.setPhoneNumber(profile.getPhoneNumber());
+        profileOne.setEmail(profile.getEmail());
         profileOne.setAddress(profile.getAddress());
         profileOne.setAvatar(profile.getAvatar());
         UserProfile profileTwo = profileRepository.findOneByProfileId(profileOne.getProfileId());
@@ -112,34 +113,36 @@ public class TestController {
     public Object getAllFriendByUser(@RequestParam int userId) {
         return friendResponseRepository.findAllFriend(userId);
     }
+
     @PostMapping(value = "/acceptedFriend")
-    public boolean acceptedFriend(@RequestBody InvitationFriend invitationFriend){
+    public boolean acceptedFriend(@RequestBody InvitationFriend invitationFriend) {
         InvitationFriend a = friendRepository.getInfoSender(invitationFriend.getSenderId(),
                 invitationFriend.getReceiverId());
-        if (a==null){
+        if (a == null) {
             return false;
         }
-        friendRepository.acceptRequest(invitationFriend.getReceiverId(),invitationFriend.getSenderId(),
-                invitationFriend.isAccept(),invitationFriend.getFriendId());
+        friendRepository.acceptRequest(invitationFriend.getReceiverId(), invitationFriend.getSenderId(),
+                invitationFriend.isAccept(), invitationFriend.getFriendId());
         return true;
     }
 
     @PostMapping(value = "/deleteInvitationFriend")
-    public Boolean deleteInvitationFriend(@RequestParam int friendId){
+    public Boolean deleteInvitationFriend(@RequestParam int friendId) {
         InvitationFriend friend = friendRepository.getInvitationFriendBy(friendId);
-        if (friend==null){
+        if (friend == null) {
             return false;
         }
         friendRepository.deleteInvitationFriendByFriendId(friendId);
         return true;
     }
+
     @PostMapping(value = "/cancelInvitationFriend")
-    public Boolean cancelInvitationFriend(@RequestParam int senderId, @RequestParam int receiverId){
-        InvitationFriend friend = friendRepository.getInfoSender(senderId,receiverId);
-        if (friend==null){
+    public Boolean cancelInvitationFriend(@RequestParam int senderId, @RequestParam int receiverId) {
+        InvitationFriend friend = friendRepository.getInfoSender(senderId, receiverId);
+        if (friend == null) {
             return false;
         }
-        friendRepository.deleteInvitationFriend(senderId,receiverId);
+        friendRepository.deleteInvitationFriend(senderId, receiverId);
         return true;
     }
 
@@ -202,34 +205,54 @@ public class TestController {
     //insert work
     @PostMapping(value = "/addWork")
     public BaseResponse addWork(@RequestBody Action work) {
-        if (work.getActionName().equals("")) {
+        Action action = new Action();
+        action.setActionName(work.getActionName());
+        action.setActionStatus(work.getActionStatus());
+        action.setCreatedTime(work.getCreatedTime());
+        action.setCreatorId(work.getCreatorId());
+        action.setGroupId(work.getGroupId());
+        action.setDescription(work.getDescription());
+        action.setTimeStart(work.getTimeStart());
+        action.setTimeEnd(work.getTimeEnd());
+        if (action.getActionName().equals("")) {
             return BaseResponse.createResponse(0, "work name not null");
         } else {
-            actionRepository.insertAction(work.getActionName(), work.getCreatorId(),
-                    work.getGroupId(), work.getTimeStart(), work.getTimeEnd(),work.getActionStatus(),
-                    work.getDescription());
+            actionRepository.insertAction(action.getActionName(), action.getCreatorId(),
+                    action.getGroupId(), action.getTimeStart(), action.getTimeEnd(), action.getActionStatus(),
+                    action.getDescription());
+            int id = actionRepository.getIdInserted();
+            action.setActionId(id);
         }
-        return BaseResponse.createResponse(work);
+        return BaseResponse.createResponse(action);
     }
 
     //update
     @PostMapping(value = "/updateWork")
     public BaseResponse updateWork(@RequestBody Action work) {
         Action work1 = actionRepository.findWorkById(work.getActionId());
+        Action action = new Action();
+        action.setActionName(work.getActionName());
+        action.setActionStatus(work.getActionStatus());
+        action.setCreatedTime(work.getCreatedTime());
+        action.setCreatorId(work.getCreatorId());
+        action.setGroupId(work.getGroupId());
+        action.setDescription(work.getDescription());
+        action.setTimeStart(work.getTimeStart());
+        action.setTimeEnd(work.getTimeEnd());
         if (work1 == null) {
             BaseResponse.createResponse(0, "work not exit");
         } else {
-            actionRepository.updateAction(work.getActionId(), work.getActionName()
-                    , work.getTimeEnd(),work.getActionStatus(), work.getDescription(),work.getCreatorId());
+            actionRepository.updateAction(action.getActionId(), action.getActionName()
+                    , action.getTimeEnd(), action.getActionStatus(), action.getDescription(), action.getCreatorId());
         }
-        return BaseResponse.createResponse(work);
+        return BaseResponse.createResponse(action);
     }
 
     @PostMapping(value = "/updateStatusWork")
     public boolean updateStatusWork(@RequestParam int id,
-                                    @RequestParam String status){
-        if (actionRepository.countActionSmallFish(id)==actionRepository.countUserActionSmall(id)){
-            actionRepository.updateStatusAction(id,status);
+                                    @RequestParam String status) {
+        if (actionRepository.countActionSmallFish(id) == actionRepository.countUserActionSmall(id)) {
+            actionRepository.updateStatusAction(id, status);
             return true;
         }
         return false;
@@ -237,10 +260,10 @@ public class TestController {
 
     //deletework dang loi
     @PostMapping(value = "/deleteWork")
-    public boolean deleteWork(@RequestParam int idW,@RequestParam int profileId) {
+    public boolean deleteWork(@RequestParam int idW, @RequestParam int profileId) {
         Action work1 = actionRepository.findWorkById(idW);
         if (work1 != null) {
-            actionRepository.deleteActionById(idW,profileId);
+            actionRepository.deleteActionById(idW, profileId);
             return true;
         }
         return false;
@@ -296,14 +319,41 @@ public class TestController {
         return actionSmallRepository.getAllActionSmallByActionId(actionId);
     }
 
+    @PostMapping(value = "/addMemberForGroup")
+    public List<BaseResponse> addMemberForGroup(@RequestBody List<UserTeam> userGroup) {
+        List<BaseResponse> baseResponses = new ArrayList<>();
+        List<UserTeam> userTeams = new ArrayList<>();
+        for (UserTeam userTem :
+                userGroup) {
+            UserTeam workDetails = userGroupRepository.findInfo(userTem.getGroupId(), userTem.getProfileId());
+            if (workDetails != null) {
+                baseResponses.add(BaseResponse.createResponse(0, "Group is not exit"));
+            } else {
+                userTeams.add(userTem);
+                baseResponses.add(BaseResponse.createResponse(userTem));
+            }
+        }
+        userGroupRepository.saveAll(userTeams);
+        return baseResponses;
+    }
+
     // them action small
     @PostMapping(value = "/addActionSmall")
-    public BaseResponse addActionSmall(@RequestBody ActionSmall actionSmall) {
-        if (actionSmall.getDescription().isEmpty()) {
-            return BaseResponse.createResponse(0, "description is not null");
+    public List<BaseResponse> addActionSmall(@RequestBody List<ActionSmall> actionSmall) {
+        List<BaseResponse> baseResponses = new ArrayList<>();
+        List<ActionSmall> actionSmalls = new ArrayList<>();
+        for (ActionSmall actionSmallOne :
+                actionSmall) {
+
+            if (actionSmallOne.getDescription().isEmpty()) {
+                baseResponses.add(BaseResponse.createResponse(0, "description is not null"));
+            } else {
+                actionSmalls.add(actionSmallOne);
+                baseResponses.add(BaseResponse.createResponse(actionSmallOne));
+            }
         }
-        actionSmallRepository.addActionSmall(actionSmall.getActionId(), actionSmall.getDescription());
-        return BaseResponse.createResponse(actionSmall);
+        actionSmallRepository.saveAll(actionSmalls);
+        return baseResponses;
     }
 
     // xoa action small
@@ -329,24 +379,7 @@ public class TestController {
     public Object getAllActionSmallOfUser(@RequestParam int actionId, @RequestParam int profileId) {
         return userActionSmallResponseRepository.getAllActionSmallOfUser(actionId, profileId);
     }
-    @PostMapping(value = "/addMemberForGroup")
-    public List<BaseResponse> addMemberForGroup(@RequestBody List<UserTeam> userGroup) {
-        List<BaseResponse> baseResponses = new ArrayList<>();
-        List<UserTeam>userTeams = new ArrayList<>();
-        for (UserTeam userTem :
-                userGroup) {
-            UserTeam workDetails = userGroupRepository.findInfo(userTem.getGroupId(), userTem.getProfileId());
-            if (workDetails != null) {
-                baseResponses.add(BaseResponse.createResponse(0, "Group is not exit"));
-            }
-            else {
-                userTeams.add(userTem);
-                baseResponses.add(BaseResponse.createResponse(userTem));
-            }
-        }
-        userGroupRepository.saveAll(userTeams);
-        return baseResponses;
-    }
+
     // add user action small
     @PostMapping(value = "/addUserActionSmall")
     public BaseResponse addUserActionSmall(@RequestBody UserActionSmall userActionSmall) {

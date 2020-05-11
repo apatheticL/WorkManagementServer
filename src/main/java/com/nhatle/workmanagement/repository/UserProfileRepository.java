@@ -35,7 +35,8 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Intege
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "update user_profile set avatar =:avatar, full_name = :fullname,addres = :address,phone_number = :phone,email:email where  profile_id = :id")
+    @Query(nativeQuery = true, value = "update user_profile set avatar =:avatar, full_name = :fullname,addres = :address," +
+            "phone_number = :phone,email = :email where  profile_id = :id")
     void updateProfile(@Param(value = "id") int id,
                        @Param(value = "avatar") String avatar,
                        @Param(value = "fullname") String fullname,

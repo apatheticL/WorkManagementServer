@@ -34,7 +34,6 @@ public class ActionResponse {
     private String description;
     @Column(name = "action_status")
     private String actionStatus;
-
     public String getActionStatus() {
         return actionStatus;
     }

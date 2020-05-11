@@ -7,6 +7,7 @@ import java.io.Serializable;
 @Table(name = "user_action_small")
 public class UserActionSmall implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_action_small_id")
     private int userActionSmallId;
     @Column(name = "group_id")
