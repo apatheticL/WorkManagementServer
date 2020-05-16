@@ -34,6 +34,16 @@ public class ActionResponse {
     private String description;
     @Column(name = "action_status")
     private String actionStatus;
+    private String avatar;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public String getActionStatus() {
         return actionStatus;
     }

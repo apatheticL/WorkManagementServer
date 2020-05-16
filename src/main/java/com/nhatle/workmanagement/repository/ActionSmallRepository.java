@@ -17,6 +17,15 @@ public interface ActionSmallRepository extends JpaRepository<ActionSmall, Intege
     List<ActionSmall> getAllActionSmallByActionId(@Param(value = "actionId") int actionId);
 
     @Query(nativeQuery = true,
+    value = "SELECT action_small.action_id,action_small.action_small_id,action_small.action_small_name " +
+            "FROM action_management.action_small " +
+            "join user_action_small on action_small.action_small_id = user_action_small.action_small_id " +
+            "where action_small.action_id = :actionId and user_action_small.profile_id = :profileId")
+    List<ActionSmall> getAllActionSmallOnActionOfUser(@Param(value = "actionId") int actionId,
+                                                      @Param(value = "profileId") int profileId);
+
+
+    @Query(nativeQuery = true,
             value = "select * from action_small where action_small_id = :actionId")
     ActionSmall getActionSmallByActionSmallId(@Param(value = "actionId") int actionId);
 

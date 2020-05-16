@@ -26,7 +26,7 @@ public interface FriendRepository extends JpaRepository<InvitationFriend,Integer
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "update invitation_friend set is_accept=:isAccept where sender_id = :senderId " +
-            "and receiver_id = :receiverId where invitation_friend.friend_id = :friendId ")
+            "and receiver_id = :receiverId and invitation_friend.friend_id = :friendId ")
     void acceptRequest(@Param(value = "receiverId") int receiverId,
                        @Param(value = "senderId") int senderId,
                        @Param(value = "isAccept") int isAccept,

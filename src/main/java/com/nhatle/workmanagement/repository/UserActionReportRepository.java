@@ -29,7 +29,7 @@ public interface UserActionReportRepository extends JpaRepository<UserActionRepo
     @Transactional
     @Modifying
     @Query(nativeQuery = true,
-            value = "update action_management.user_action_report " +
+            value = "update user_action_report " +
                     "set action_actual=:actionActual, action_next=:actionNext,action_issua=:actionIssua " +
                     " where report_id=:idReport")
     void updateReport(@Param(value = "idReport") int idReport,
@@ -45,10 +45,9 @@ public interface UserActionReportRepository extends JpaRepository<UserActionRepo
     void deleteUserActionSmall(@Param("reportId") int reportId);
 
     @Query(nativeQuery = true,
-            value = "SELECT * FROM action_management.user_action_report " +
-                    "where  user_action_small_id = :userActionSmallId and action_id =:actionId")
-    List<UserActionReport> findReportByUser(@Param(value = "userActionSmallId") int userActionSmallId,
-                                            @Param(value = "actionId") int actionId);
+            value = "SELECT * FROM user_action_report " +
+                    "where user_action_report.report_id = :reportId")
+    UserActionReport findReportByUser(@Param(value = "reportId") int reportId);
 
     @Query(nativeQuery = true,
             value = "SELECT * FROM action_management.user_action_report where  report_id = :reportId")

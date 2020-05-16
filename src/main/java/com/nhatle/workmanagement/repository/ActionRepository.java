@@ -40,7 +40,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "update action set action_name=:workname," +
+    @Query(nativeQuery = true, value = "update action set action_name=:workname, " +
             " time_end = :timeend ,action_status=:status, description = :description " +
             " where  action_id = :id and profile_id = :profileId")
     void updateAction(@Param(value = "id") int id,

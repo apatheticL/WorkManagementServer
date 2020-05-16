@@ -18,7 +18,10 @@ public interface ActionResponseRepository extends JpaRepository<ActionResponse, 
             value = "select distinct action.action_id,action.action_name," +
                     "action.profile_id as profile_creator, team.group_name , " +
                     "(select user_profile.full_name from user_profile where user_profile.profile_id = action.profile_id)" +
-                    " as full_name,action.group_id,DATE_FORMAT(time_start, '%Y-%m-%d') as time_start," +
+                    " as full_name , " +
+                    "(select user_profile.avatar from user_profile where user_profile.profile_id = action.profile_id) " +
+                    " as avatar " +
+                    ",action.group_id,DATE_FORMAT(time_start, '%Y-%m-%d') as time_start," +
                     " DATE_FORMAT(time_end, '%Y-%m-%d') as time_end, action.description," +
                     " DATE_FORMAT(action.created_time, '%Y-%m-%d') as created_time, action.action_status, " +
                     "( select count(user_action_report.report_id) " +
