@@ -15,6 +15,10 @@ public interface UserActionSmallRepository extends JpaRepository<UserActionSmall
     @Query(nativeQuery = true,
     value = "SELECT * FROM user_action_small where user_action_small_id = :userActionSmallId")
     UserActionSmall findUserActionSmall(@Param(value = "userActionSmallId") int userActionSmallId);
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM user_action_small where profile_id = :profileId and action_small_id = :actionSmallId")
+    UserActionSmall findUserActionSmallByActionSmallId(@Param(value = "actionSmallId") int actionSmallId,
+                                                       @Param(value="profileId") int profileId);
 
     @Modifying
     @Query(nativeQuery = true,

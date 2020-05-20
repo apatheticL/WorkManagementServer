@@ -50,6 +50,11 @@ public interface UserActionReportRepository extends JpaRepository<UserActionRepo
     UserActionReport findReportByUser(@Param(value = "reportId") int reportId);
 
     @Query(nativeQuery = true,
+            value = "SELECT * FROM user_action_report " +
+                    "where user_action_report.user_action_small_id = :userActionSamllId")
+    UserActionReport findReportByUserActionSmall(@Param(value = "userActionSamllId") int userActionSamllId);
+
+    @Query(nativeQuery = true,
             value = "SELECT * FROM action_management.user_action_report where  report_id = :reportId")
     UserActionReport findReport(@Param(value = "reportId") int reportId);
 

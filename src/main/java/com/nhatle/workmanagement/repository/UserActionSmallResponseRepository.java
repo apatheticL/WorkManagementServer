@@ -17,7 +17,8 @@ public interface UserActionSmallResponseRepository extends JpaRepository<UserAct
             " action_small.action_small_name,user_profile.avatar, user_profile.full_name," +
             " user_action_small.part," +
             " DATE_FORMAT(user_action_small.time_start, '%Y-%m-%d') as time_start" +
-            ",DATE_FORMAT(user_action_small.time_end, '%Y-%m-%d')as time_end " +
+            ",DATE_FORMAT(user_action_small.time_end, '%Y-%m-%d')as time_end, " +
+            "(select user_action_report.report_id from user_action_report where user_action_report.user_action_small_id = user_action_small.user_action_small_id) as report_id " +
             " FROM action_management.action_small join user_action_small" +
             " on action_small.action_small_id=user_action_small.action_small_id" +
             " join user_profile on user_profile.profile_id = user_action_small.profile_id" +
@@ -27,7 +28,9 @@ public interface UserActionSmallResponseRepository extends JpaRepository<UserAct
     value = " SELECT user_action_small.user_action_small_id, user_profile.profile_id, " +
             "action_small.action_small_name,user_profile.avatar, user_profile.full_name," +
             " user_action_small.part, DATE_FORMAT(user_action_small.time_start, '%Y-%m-%d') as time_start," +
-            "DATE_FORMAT(user_action_small.time_end, '%Y-%m-%d') as time_end " +
+            "DATE_FORMAT(user_action_small.time_end, '%Y-%m-%d') as time_end," +
+            "(select user_action_report.report_id from user_action_report" +
+            " where user_action_report.user_action_small_id = user_action_small.user_action_small_id) as report_id " +
             " FROM action_management.action_small join user_action_small" +
             " on action_small.action_small_id=user_action_small.action_small_id" +
             " join user_profile on user_profile.profile_id = user_action_small.profile_id" +

@@ -23,6 +23,17 @@ public class UserActionSmallResponse {
     @Column(name = "full_name")
     private String fullName;
     private String avatar;
+    @Column(name = "report_id")
+    private String reportId;
+
+    public String getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(String reportId) {
+
+        this.reportId = reportId;
+    }
 
     public int getProfileId() {
         return profileId;

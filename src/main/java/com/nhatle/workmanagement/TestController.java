@@ -101,9 +101,9 @@ public class TestController {
 //        if (profileTwo == null) {
 //            BaseResponse.createResponse(0, "error when to update");
 //        } else {
-            profileRepository.updateProfile(profileOne.getProfileId(),
-                    profileOne.getAvatar(), profileOne.getFullName(),
-                    profileOne.getAddress(), profileOne.getEmail(), profileOne.getPhoneNumber());
+        profileRepository.updateProfile(profileOne.getProfileId(),
+                profileOne.getAvatar(), profileOne.getFullName(),
+                profileOne.getAddress(), profileOne.getEmail(), profileOne.getPhoneNumber());
 //        }
         return BaseResponse.createResponse(profileOne);
     }
@@ -363,6 +363,7 @@ public class TestController {
         return baseResponses;
     }
 
+
     // xoa action small
     @DeleteMapping(value = "/deleteActionSmall")
     public boolean deleteActionSmall(@RequestParam int actionSmallId) {
@@ -373,6 +374,18 @@ public class TestController {
             actionSmallRepository.deleteActionSmallByActionSmallId(actionSmallId);
             return true;
         }
+    }
+
+    @PutMapping(value = "/updateActionSmall")
+    public BaseResponse updateActionSmall(@RequestBody ActionSmall actionSmall) {
+        ActionSmall actionS = actionSmallRepository.getActionSmallByActionSmallId(actionSmall.getActionSmallId());
+        if (actionS == null) {
+            BaseResponse.createResponse(0, "Can not update");
+        } else {
+            actionSmallRepository.updateActionSmall(actionSmall.getActionSmallId(), actionSmall.getDescription());
+        }
+        return BaseResponse.createResponse(actionSmall);
+
     }
 
     //them, xoa , sua user action small
@@ -393,6 +406,11 @@ public class TestController {
         if (userActionSmall.getPart().isEmpty()) {
             return BaseResponse.createResponse(0, "Part is not null");
         }
+        UserActionSmall userAction = userActionSmallRepository.findUserActionSmallByActionSmallId(userActionSmall.getActionSmallId(),
+                userActionSmall.getProfileId());
+        if (userAction!=null){
+            return BaseResponse.createResponse(0, "The user is doing this action_small");
+        }
         userActionSmallRepository.insertUserAction(userActionSmall.getGroupId(), userActionSmall.getProfileId(),
                 userActionSmall.getActionSmallId(), userActionSmall.getPart(), userActionSmall.getTimeStart(),
                 userActionSmall.getTimeEnd());
@@ -410,9 +428,10 @@ public class TestController {
             return true;
         }
     }
+
     @GetMapping("/getAllActionSmallOnActionOfUser")
-    public Object getAllActionSmallOnActionOfUser(@RequestParam int actionId, @RequestParam int profileId){
-        return actionSmallRepository.getAllActionSmallOnActionOfUser(actionId,profileId);
+    public Object getAllActionSmallOnActionOfUser(@RequestParam int actionId, @RequestParam int profileId) {
+        return actionSmallRepository.getAllActionSmallOnActionOfUser(actionId, profileId);
     }
 //    @PostMapping(value = "/updateUserActionSmall")
 //    public BaseResponse updateUserActionSmall(@RequestBody UserActionSmall userActionSmall) {
@@ -442,10 +461,15 @@ public class TestController {
                 || userActionReport.getActionActual().isEmpty()) {
             return BaseResponse.createResponse(0, "it not null");
         }
-        userActionReportRepository.addReport(userActionReport.getUserActionSmallId(),
-                userActionReport.getActionId(), userActionReport.getActionActual(),
-                userActionReport.getActionNext(), userActionReport.getActionIssua());
-        return BaseResponse.createResponse(userActionReport);
+        UserActionReport userActionReport1 = userActionReportRepository.findReportByUserActionSmall(userActionReport.getUserActionSmallId());
+        if (userActionReport1 != null) {
+            return BaseResponse.createResponse(0, "it is inserted");
+        } else {
+            userActionReportRepository.addReport(userActionReport.getUserActionSmallId(),
+                    userActionReport.getActionId(), userActionReport.getActionActual(),
+                    userActionReport.getActionNext(), userActionReport.getActionIssua());
+            return BaseResponse.createResponse(userActionReport);
+        }
     }
 
     @PutMapping(value = "/updateReportOnAction")
