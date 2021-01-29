@@ -1,12 +1,15 @@
 package com.nhatle.workmanagement.repository;
 
 import com.nhatle.workmanagement.model.UserTeam;
+import com.nhatle.workmanagement.model.response.BaseResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 public interface UserGroupRepository extends JpaRepository<UserTeam,Integer> {

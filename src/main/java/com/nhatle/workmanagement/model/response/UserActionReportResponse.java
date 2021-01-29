@@ -8,12 +8,10 @@ public class UserActionReportResponse {
     @Id
     @Column(name = "report_id")
     private int reportId;
-    @Column(name = "group_id")
-    private int groupId;
+    @Column(name = "user_action_small_id")
+    private int userActionSmallId;
     @Column(name = "profile_id")
     private int profileId;
-    @Column(name = "action_small_id")
-    private int actionSmallId;
     @Column(name = "action_id")
     private int actionId;
     @Column(name = "avatar")
@@ -37,12 +35,12 @@ public class UserActionReportResponse {
         this.reportId = reportId;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public int getUserActionSmallId() {
+        return userActionSmallId;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setUserActionSmallId(int userActionSmallId) {
+        this.userActionSmallId = userActionSmallId;
     }
 
     public int getProfileId() {
@@ -51,14 +49,6 @@ public class UserActionReportResponse {
 
     public void setProfileId(int profileId) {
         this.profileId = profileId;
-    }
-
-    public int getActionSmallId() {
-        return actionSmallId;
-    }
-
-    public void setActionSmallId(int actionSmallId) {
-        this.actionSmallId = actionSmallId;
     }
 
     public int getActionId() {

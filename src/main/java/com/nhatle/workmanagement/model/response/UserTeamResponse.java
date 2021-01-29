@@ -9,7 +9,7 @@ import javax.persistence.IdClass;
 
 @Entity
 @IdClass(IdUserGroup.class)
-public class UserGroupResponse {
+public class UserTeamResponse {
     @Id
     @Column(name = "profile_id")
     private int profileId;

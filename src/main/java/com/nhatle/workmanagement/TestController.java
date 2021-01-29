@@ -16,11 +16,11 @@ public class TestController {
     @Autowired
     private UserProfileRepository profileRepository;
     @Autowired
-    private FriendRepository friendRepository;
+    private FriendResponseRepository friendResponseRepository;
     @Autowired
     private FriendIdRepository friendIdRepository;
     @Autowired
-    private FriendFriendRepository friendFriendRepository;
+    private FriendRepository friendRepository;
     @Autowired
     private ActionResponseRepository workResponseRepository;
     @Autowired
@@ -45,6 +45,9 @@ public class TestController {
     private CommentRepository commentRepository;
     @Autowired
     private CommentResponseRepository commentResponseRepository;
+
+    //    @Autowired
+//    private UserActionRepository userActionRepository;
     // profile
     @PostMapping(value = "/login")
     public BaseResponse login(@RequestBody LoginResponse loginRequest) {
@@ -70,7 +73,9 @@ public class TestController {
         }
         UserProfile profile1 = profileRepository.findOneByUsername(profile.getUsername());
         if (profile1 == null) {
-            profileRepository.insertAccount(profile.getUsername(), profile.getPassword(), profile.getAvatar(), profile.getFullName(), profile.getAddress(), profile.getPhoneNumber(), profile.getEmail());
+            profileRepository.insertAccount(profile.getUsername(), profile.getPassword(),
+                    profile.getAvatar(), profile.getFullName(), profile.getAddress(),
+                    profile.getPhoneNumber(), profile.getEmail());
 
         } else {
             BaseResponse.createResponse(0, "username consist");
@@ -95,7 +100,9 @@ public class TestController {
         if (profileTwo == null) {
             BaseResponse.createResponse(0, "error when to update");
         } else {
-            profileRepository.updateProfile(profileOne.getProfileId(), profileOne.getAvatar(), profileOne.getFullName(), profileOne.getAddress(), profileOne.getEmail(), profileOne.getPhoneNumber());
+            profileRepository.updateProfile(profileOne.getProfileId(),
+                    profileOne.getAvatar(), profileOne.getFullName(),
+                    profileOne.getAddress(), profileOne.getEmail(), profileOne.getPhoneNumber());
         }
         return BaseResponse.createResponse(profileOne);
     }
@@ -103,9 +110,19 @@ public class TestController {
     // friend le20051998@gmail.com
     @GetMapping(value = "/getAllFriendByUser")
     public Object getAllFriendByUser(@RequestParam int userId) {
-        return friendRepository.findAllFriend(userId);
+        return friendResponseRepository.findAllFriend(userId);
     }
-
+    @PostMapping(value = "/acceptedFriend")
+    public boolean acceptedFriend(@RequestBody InvitationFriend invitationFriend){
+        InvitationFriend a = friendRepository.getInfoSender(invitationFriend.getSenderId(),
+                invitationFriend.getReceiverId());
+        if (a==null){
+            return false;
+        }
+        friendRepository.acceptRequest(invitationFriend.getReceiverId(),invitationFriend.getSenderId(),
+                invitationFriend.isAccept(),invitationFriend.getFriendId());
+        return true;
+    }
     @GetMapping(value = "/getAllNotFriend")
     public Object getAllNotFriend(@RequestParam int idUser) {
         List<FriendId> friendIds = friendIdRepository.findAllNotFriend(idUser);
@@ -125,7 +142,7 @@ public class TestController {
 
     @GetMapping(value = "/getAllUserSenderFriend")
     public Object getAllUserSender(@RequestParam int idProfile) {
-        return friendRepository.getAllFriendSender(idProfile);
+        return friendResponseRepository.getAllFriendSender(idProfile);
     }
 
     // gui loi moi ket ban
@@ -137,9 +154,11 @@ public class TestController {
         friend1.setReceiverId(friend.getReceiverId());
         friend1.setAccept(friend.isAccept());
         friend1.setCreatedTime(friend.getCreatedTime());
-        InvitationFriend friend2 = friendFriendRepository.getInfoSender(friend1.getSenderId(), friend1.getReceiverId());
+        InvitationFriend friend2 = friendRepository.getInfoSender(friend1.getSenderId(),
+                friend1.getReceiverId());
         if (friend2 == null) {
-            friendFriendRepository.senderAddFriend(friend1.getSenderId(), friend1.getReceiverId(), friend1.isAccept());
+            friendRepository.senderAddFriend(friend1.getSenderId(),
+                    friend1.getReceiverId(), friend1.isAccept());
 
         } else {
             BaseResponse.createResponse(0, "sender consist");
@@ -149,14 +168,14 @@ public class TestController {
 
     // work
     // getallwork with member is user
-    @GetMapping(value = "/getAllWorkWithUserCreate")
-    public Object getAllWorkWithUserCreate(@RequestParam int userid) {
-        return workResponseRepository.getAllWorkByUserCreate(userid);
-    }
+//    @GetMapping(value = "/getAllUserActionSmallIsFinish")
+//    public Object getAllUserActionSmallIsFinish(@RequestParam int actionId) {
+//        return userActionRepository.getAllUserActionSmallIsFinish(actionId);
+//    }
 
     @GetMapping(value = "/getAllWorkWithUserIsMember")
     public Object getAllWorkWithUserIsMember(@RequestParam int profileId) {
-        return workResponseRepository.getAllWorkByUserIsMember(profileId);
+        return workResponseRepository.getAllWork(profileId);
     }
 
 
@@ -166,7 +185,9 @@ public class TestController {
         if (work.getActionName().equals("")) {
             return BaseResponse.createResponse(0, "work name not null");
         } else {
-            actionRepository.insertAction(work.getActionName(), work.getCreatorId(), work.getGroupId(), work.getTimeStart(), work.getTimeEnd());
+            actionRepository.insertAction(work.getActionName(), work.getCreatorId(),
+                    work.getGroupId(), work.getTimeStart(), work.getTimeEnd(),work.getActionStatus(),
+                    work.getDescription());
         }
         return BaseResponse.createResponse(work);
     }
@@ -178,17 +199,28 @@ public class TestController {
         if (work1 == null) {
             BaseResponse.createResponse(0, "work not exit");
         } else {
-            actionRepository.updateAction(work.getActionId(), work.getActionName(), work.getTimeStart(), work.getTimeEnd());
+            actionRepository.updateAction(work.getActionId(), work.getActionName()
+                    , work.getTimeEnd(),work.getActionStatus(), work.getDescription(),work.getCreatorId());
         }
         return BaseResponse.createResponse(work);
     }
 
+    @PostMapping(value = "/updateStatusWork")
+    public boolean updateStatusWork(@RequestParam int id,
+                                    @RequestParam String status){
+        if (actionRepository.countActionSmallFish(id)==actionRepository.countUserActionSmall(id)){
+            actionRepository.updateStatusAction(id,status);
+            return true;
+        }
+        return false;
+    }
+
     //deletework dang loi
     @PostMapping(value = "/deleteWork")
-    public boolean deleteWork(@RequestParam int idW) {
+    public boolean deleteWork(@RequestParam int idW,@RequestParam int profileId) {
         Action work1 = actionRepository.findWorkById(idW);
         if (work1 != null) {
-            actionRepository.deleteActionById(idW);
+            actionRepository.deleteActionById(idW,profileId);
             return true;
         }
         return false;
@@ -222,15 +254,7 @@ public class TestController {
     }
 
     // them member trong nhom
-    @PostMapping(value = "/addMemberForGroup")
-    public BaseResponse addMemberForGroup(@RequestBody UserTeam userGroup) {
-        UserTeam workDetails = userGroupRepository.findInfo(userGroup.getGroupId(), userGroup.getProfileId());
-        if (workDetails != null) {
-            return BaseResponse.createResponse(0, "Group is not exit");
-        }
-        userGroupRepository.addMemberGroup(userGroup.getGroupId(), userGroup.getProfileId());
-        return BaseResponse.createResponse(userGroup);
-    }
+
 
     // xoa member
     @PostMapping(value = "/deleteMemberOnGroup")
@@ -278,6 +302,28 @@ public class TestController {
         return userActionSmallResponseRepository.getAllUserActionSmall(actionId);
     }
 
+    @GetMapping(value = "/getAllActionSmallOfUser")
+    public Object getAllActionSmallOfUser(@RequestParam int actionId, @RequestParam int profileId) {
+        return userActionSmallResponseRepository.getAllActionSmallOfUser(actionId, profileId);
+    }
+    @PostMapping(value = "/addMemberForGroup")
+    public List<BaseResponse> addMemberForGroup(@RequestBody List<UserTeam> userGroup) {
+        List<BaseResponse> baseResponses = new ArrayList<>();
+        List<UserTeam>userTeams = new ArrayList<>();
+        for (UserTeam userTem :
+                userGroup) {
+            UserTeam workDetails = userGroupRepository.findInfo(userTem.getGroupId(), userTem.getProfileId());
+            if (workDetails != null) {
+                baseResponses.add(BaseResponse.createResponse(0, "Group is not exit"));
+            }
+            else {
+                userTeams.add(userTem);
+                baseResponses.add(BaseResponse.createResponse(userTem));
+            }
+        }
+        userGroupRepository.saveAll(userTeams);
+        return baseResponses;
+    }
     // add user action small
     @PostMapping(value = "/addUserActionSmall")
     public BaseResponse addUserActionSmall(@RequestBody UserActionSmall userActionSmall) {
@@ -285,32 +331,34 @@ public class TestController {
             return BaseResponse.createResponse(0, "Part is not null");
         }
         userActionSmallRepository.insertUserAction(userActionSmall.getGroupId(), userActionSmall.getProfileId(),
-                userActionSmall.getActionSmallId(), userActionSmall.getPart(), userActionSmall.getTimeStart(), userActionSmall.getTimeEnd());
+                userActionSmall.getActionSmallId(), userActionSmall.getPart(), userActionSmall.getTimeStart(),
+                userActionSmall.getTimeEnd());
         return BaseResponse.createResponse(userActionSmall);
     }
 
     @PostMapping(value = "/deleteUserActionSmall")
-    public boolean deleteUserActionSmall(@RequestParam int groupId,
-                                         @RequestParam int profileId,
-                                         @RequestParam int actionSmallId)
-    {
+    public boolean deleteUserActionSmall(@RequestParam int userActionSmallId) {
         UserActionSmall action =
-                userActionSmallRepository.findUserActionSmall(groupId, profileId, actionSmallId);
+                userActionSmallRepository.findUserActionSmall(userActionSmallId);
         if (action == null) {
             return false;
         } else {
-            userActionSmallRepository.deleteUserActionSmall(actionSmallId, profileId, groupId);
+            userActionSmallRepository.deleteUserActionSmall(userActionSmallId);
             return true;
         }
     }
 
     @PostMapping(value = "/updateUserActionSmall")
     public BaseResponse updateUserActionSmall(@RequestBody UserActionSmall userActionSmall) {
-        UserActionSmall action = userActionSmallRepository.findUserActionSmall(userActionSmall.getGroupId(), userActionSmall.getProfileId(), userActionSmall.getActionSmallId());
+        UserActionSmall action =
+                userActionSmallRepository.findUserActionSmall(userActionSmall.getUserActionSmallId());
         if (action == null) {
             BaseResponse.createResponse(0, "user action small not exit");
         } else {
-            userActionSmallRepository.updateActionSmallByUser(userActionSmall.getGroupId(), userActionSmall.getProfileId(), userActionSmall.getActionSmallId(), userActionSmall.getPart(), userActionSmall.getTimeStart(), userActionSmall.getTimeEnd());
+            userActionSmallRepository.updateActionSmallByUser(userActionSmall.getGroupId(),
+                    userActionSmall.getProfileId(), userActionSmall.getActionSmallId(),
+                    userActionSmall.getUserActionSmallId(), userActionSmall.getPart(),
+                    userActionSmall.getTimeStart(), userActionSmall.getTimeEnd());
 
         }
         return BaseResponse.createResponse(userActionSmall);
@@ -324,20 +372,27 @@ public class TestController {
 
     @PostMapping(value = "/addReportOnAction")
     public BaseResponse addReportOnAction(@RequestBody UserActionReport userActionReport) {
-        if (userActionReport.getActionIssua().isEmpty() || userActionReport.getActionNext().isEmpty() || userActionReport.getActionActual().isEmpty()) {
+        if (userActionReport.getActionIssua().isEmpty() || userActionReport.getActionNext().isEmpty()
+                || userActionReport.getActionActual().isEmpty()) {
             return BaseResponse.createResponse(0, "it not null");
         }
-        userActionReportRepository.addReport(userActionReport.getProfileId(), userActionReport.getActionSmallId(), userActionReport.getGroupId(), userActionReport.getActionId(), userActionReport.getActionActual(), userActionReport.getActionNext(), userActionReport.getActionIssua());
+        userActionReportRepository.addReport(userActionReport.getUserActionSmallId(),
+                userActionReport.getActionId(), userActionReport.getActionActual(),
+                userActionReport.getActionNext(), userActionReport.getActionIssua());
         return BaseResponse.createResponse(userActionReport);
     }
 
     @PostMapping(value = "/updateReportOnAction")
     public BaseResponse updateReportOnAction(@RequestBody UserActionReport userActionReport) {
-        List<UserActionReport> action = userActionReportRepository.findReportByUser(userActionReport.getProfileId(), userActionReport.getActionId());
+        List<UserActionReport> action =
+                userActionReportRepository.findReportByUser(userActionReport.getUserActionSmallId(),
+                        userActionReport.getActionId());
         if (action == null) {
             BaseResponse.createResponse(0, "user not report");
         } else {
-            userActionReportRepository.updateReport(userActionReport.getReportId(), userActionReport.getActionActual(), userActionReport.getActionNext(), userActionReport.getActionIssua());
+            userActionReportRepository.updateReport(userActionReport.getReportId(),
+                    userActionReport.getActionActual(), userActionReport.getActionNext(),
+                    userActionReport.getActionIssua());
 
         }
         return BaseResponse.createResponse(userActionReport);
@@ -354,28 +409,29 @@ public class TestController {
     }
 
     @PostMapping("/sendComment")
-    public BaseResponse sendComment(@RequestBody Comment comment){
+    public BaseResponse sendComment(@RequestBody Comment comment) {
         Comment comment1 = comment;
-        if (comment1.getContent().isEmpty()){
-            BaseResponse.createResponse(0,"content is not null");
+        if (comment1.getContent().isEmpty()) {
+            BaseResponse.createResponse(0, "content is not null");
         }
-        commentRepository.addComment(comment1.getProfileId(),comment1.getGroupId(),comment1.getActionId(),
-                comment1.getContent(),comment1.getTypeContent());
+        commentRepository.addComment(comment1.getProfileId(), comment1.getGroupId(), comment1.getActionId(),
+                comment1.getContent(), comment1.getTypeContent());
         return BaseResponse.createResponse(comment1);
     }
+
     @PostMapping("/deleteCommentOnAction")
     public boolean deleteCommentOnAction(@RequestParam int commentId,
                                          @RequestParam int profileId) {
-        Comment comment = commentRepository.findCommentByUser(commentId,profileId);
+        Comment comment = commentRepository.findCommentByUser(commentId, profileId);
         if (comment == null) {
             return false;
         }
-        commentRepository.deleteCommentByUser(commentId,profileId);
+        commentRepository.deleteCommentByUser(commentId, profileId);
         return true;
     }
+
     @GetMapping("/getAllCommentOnAction")
-    public Object getAllCommentOnAction(@RequestParam int actionId){
+    public Object getAllCommentOnAction(@RequestParam int actionId) {
         return commentResponseRepository.getAllCommentByWork(actionId);
     }
-
 }
